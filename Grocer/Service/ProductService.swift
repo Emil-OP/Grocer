@@ -14,8 +14,15 @@ protocol ProductServiceProtocol {
 
 class ProductService : ProductServiceProtocol {
     
+    let baseURL = Bundle.main.object(forInfoDictionaryKey: "BASE_URL") as? String
+    
     func fetchProducts(page : Int,limit : Int = 20) async throws -> [Product]{
-        let endpoint  = "http://localhost:3300/products?page=\(page)&limit=\(limit)"
+        
+        guard let baseURL else {
+            throw URLError(.badURL)
+        }
+        let endpoint = "\(baseURL)/products?page=\(page)&limit=\(limit)"
+        
         guard let url = URL(string: endpoint) else {
             throw URLError(.badURL)
         }
@@ -24,22 +31,13 @@ class ProductService : ProductServiceProtocol {
         else { throw URLError(.badServerResponse)}
         
         return try JSONDecoder().decode([Product].self, from: data)
-//        do {
-//                    return try JSONDecoder().decode([Product].self, from: data)
-//                } catch let DecodingError.keyNotFound(key, _) {
-//                    print("❌ SWIFT ERROR: Missing key in JSON: \(key.stringValue)")
-//                    throw URLError(.cannotParseResponse)
-//                } catch let DecodingError.typeMismatch(type, context) {
-//                    print("❌ SWIFT ERROR: Type mismatch! Expected \(type) at path: \(context.codingPath.map(\.stringValue).joined(separator: "."))")
-//                    throw URLError(.cannotParseResponse)
-//                } catch let DecodingError.valueNotFound(type, context) {
-//                    print("❌ SWIFT ERROR: Expected \(type) but found null at path: \(context.codingPath.map(\.stringValue).joined(separator: "."))")
-//                    throw URLError(.cannotParseResponse)
-//                }
     }
     
     func fetchProductByName(productName : String) async throws -> [Product] {
-        let endpoint = "http://localhost:3300/search?q=\(productName)"
+        guard let baseURL else {
+            throw URLError(.badURL)
+        }
+        let endpoint  = "\(baseURL)/search?q=\(productName)"
         guard let url = URL(string: endpoint) else {
             throw URLError(.badURL)
         }

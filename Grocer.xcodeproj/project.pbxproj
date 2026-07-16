@@ -6,13 +6,31 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		20B3EF7A2FFEF420009B1697 /* Development.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 20B3EF792FFEF420009B1697 /* Development.xcconfig */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		2043898B2FCF4CF8001F2D3B /* Grocer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Grocer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		20B3EF792FFEF420009B1697 /* Development.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Development.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		20B3EF7C30002B35009B1697 /* Exceptions for "Grocer" folder in "Grocer" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 2043898A2FCF4CF8001F2D3B /* Grocer */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		2043898D2FCF4CF8001F2D3B /* Grocer */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				20B3EF7C30002B35009B1697 /* Exceptions for "Grocer" folder in "Grocer" target */,
+			);
 			path = Grocer;
 			sourceTree = "<group>";
 		};
@@ -32,6 +50,7 @@
 		204389822FCF4CF8001F2D3B = {
 			isa = PBXGroup;
 			children = (
+				20B3EF792FFEF420009B1697 /* Development.xcconfig */,
 				2043898D2FCF4CF8001F2D3B /* Grocer */,
 				2043898C2FCF4CF8001F2D3B /* Products */,
 			);
@@ -109,6 +128,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20B3EF7A2FFEF420009B1697 /* Development.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,6 +147,7 @@
 /* Begin XCBuildConfiguration section */
 		204389942FCF4CFA001F2D3B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 20B3EF792FFEF420009B1697 /* Development.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -188,6 +209,7 @@
 		};
 		204389952FCF4CFA001F2D3B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 20B3EF792FFEF420009B1697 /* Development.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -241,6 +263,7 @@
 		};
 		204389972FCF4CFA001F2D3B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 20B3EF792FFEF420009B1697 /* Development.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -251,6 +274,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Grocer/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -284,6 +308,7 @@
 		};
 		204389982FCF4CFA001F2D3B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 20B3EF792FFEF420009B1697 /* Development.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -294,6 +319,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Grocer/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

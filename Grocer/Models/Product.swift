@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct Product: Decodable, Identifiable {
+struct Product: Decodable, Identifiable, Equatable {
     let id: String
     let productName: String
     let price: Double

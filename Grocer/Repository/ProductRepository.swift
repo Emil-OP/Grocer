@@ -53,7 +53,6 @@ class ProductRepository {
         
         do {
             let newProducts = try await productService.fetchProductByName(productName: productName)
-            
             products.append(contentsOf: newProducts)
         } catch {
             print("Failed to search products: \(error.localizedDescription)")

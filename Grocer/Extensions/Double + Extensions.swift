@@ -8,7 +8,9 @@
 import Foundation
 
 extension Double {
-    func roundedString() -> String {
-        self.formatted(.number.precision(.fractionLength(2)))
+    func roundedString(precision : Int = 2) -> String {
+        self.formatted(.number.precision(.fractionLength(precision)))
     }
+    
+    
 }

@@ -11,7 +11,6 @@ struct ProductView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var cantidad: Int = 1
-    @State private var selectedAge = 18
     let product: Product
 
     var body: some View {
@@ -62,29 +61,6 @@ struct ProductView: View {
 
         }
         .padding()
-    }
-}
-
-struct AsyncImageView: View {
-    
-    let imageURL: String
-    var body: some View {
-        AsyncImage(url: URL(string: imageURL)) { phase in
-            switch phase {
-            case .empty:
-                ProgressView()
-            case .failure:
-                Image(systemName: "photo")
-            case .success(let image):
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .cornerRadius(20)
-                    .frame(maxWidth: .infinity)
-            @unknown default:
-                EmptyView()
-            }
-        }
     }
 }
 

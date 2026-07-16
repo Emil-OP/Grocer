@@ -1,0 +1,11 @@
+//
+//  Development.xcconfig
+//  Grocer
+//
+//  Created by Emil on 7/8/26.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+BASE_URL = http:/$()/localhost:3300
