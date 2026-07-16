@@ -1,2 +1,2 @@
 # Grocer
-Smart grocery list for the budget makers
+Smart grocery list for the budget conscious
