@@ -2,12 +2,12 @@
 //  LoginView.swift
 //  Grocer
 //
-//  Created by Emil on 7/6/26.
+//  Created by Emil on 7/22/26.
 //
 
 import SwiftUI
 
-struct LayoutConfig {
+private struct LayoutConfig {
     let offsetX: CGFloat
     let offsetY: CGFloat
     let fontSize: CGFloat
@@ -18,94 +18,139 @@ struct LayoutConfig {
 }
 
 struct LoginView: View {
-    @State private var email = ""
+    @Environment(AuthManager.self) private var authManager
+    @State private var username = ""
     @State private var password = ""
     @State private var successLogin: Bool = false
 
-    var layout: LayoutConfig {
+    private var layout: LayoutConfig {
         if successLogin {
             return LayoutConfig(
                 offsetX: 0,
-                offsetY: 0,
+                offsetY: 50,
                 fontSize: 0,
                 contentMode: .fit,
-                alignment: .center,
-                scale: 5,
+                alignment: .bottom,
+                scale: 3,
                 visibility: .clear
             )
         } else {
             return LayoutConfig(
-                offsetX: -190,
-                offsetY: -260,
+                offsetX: 0,
+                offsetY: -100,
                 fontSize: 40,
                 contentMode: .fill,
-                alignment: .topLeading,
+                alignment: .topTrailing,
                 scale: 1,
                 visibility: .primary
             )
         }
     }
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             Spacer()
-            Text("Grocer")
+            Text("Bienvenido de vuelta")
                 .font(.system(size: layout.fontSize))
                 .bold()
                 .foregroundStyle(layout.visibility)
 
             Spacer()
             if !successLogin {
-                TextField("Email", text: $email)
-                    .autocorrectionDisabled()
-                    .padding()
-                    .glassEffect(
-                        .regular.interactive(),
-                        in: RoundedRectangle(cornerRadius: 20)
-                    )
-                    .frame(width: .infinity)
+                VStack{
+                    HStack {
+                        Image(systemName: "person.circle")
+                        TextField("Usuario", text: $username)
+                            .autocorrectionDisabled()
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            
+                    }
+                    .padding([.leading])
 
-                SecureField("Password", text: $password)
-                    .autocorrectionDisabled()
-                    .padding()
-                    .glassEffect(
-                        .regular.interactive(),
-                        in: RoundedRectangle(cornerRadius: 20)
-                    )
-                    .frame(width: .infinity)
+                    Divider()
+                        .padding([.leading, .trailing])
 
+                    HStack {
+                        Image(systemName: "key.circle")
+                        SecureField("Contraseña", text: $password)
+                            .autocorrectionDisabled()
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                    }
+                    .padding([.leading])
+                }
+                .glassEffect(
+                    .regular,
+                    in: RoundedRectangle(cornerRadius: 20)
+                )
                 Button {
                     print("Login info submitted")
                     withAnimation(.spring(duration: 1)) {
                         successLogin.toggle()
                     }
+                    Task {
+                        try? await Task.sleep(for: .seconds(1))
+                        authManager.login(with: "testToken")
+                    }
 
                 } label: {
                     HStack {
-                        Text("Login")
+                        Text("Iniciar sesión")
                     }
-                    .frame(width: .infinity)
+                    .frame(maxWidth: .infinity, minHeight: 30)
                     .padding([.leading, .trailing], 50)
                 }
+                .padding([.top,.bottom], 10)
                 .buttonStyle(.glassProminent)
                 .frame(alignment: .center)
 
+                HStack {
+                    VStack {
+                        Divider()
+                    }
+                    Text("o")
+                    VStack {
+                        Divider()
+                    }
+                }
+                .padding([.leading,.trailing])
+                
+                Button{}label:{
+                    Text("Registrate")
+                        .frame(maxWidth: .infinity, minHeight: 30)
+                        .padding([.leading, .trailing], 50)
+                }
+                .buttonStyle(.glass)
+                .padding([.top,.bottom], 10)
+                .frame(alignment:.center)
+
                 Spacer()
+                
+                HStack() {
+                    Spacer()
+                    Text("Al continuar aceptas los términos de servicio y politica de privacidad.")
+                        .frame(maxWidth: 250,alignment:.center)
+                        .font(.footnote)
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                }
             }
         }
-        .background(alignment: layout.alignment) {
-            Image(systemName: "cart")
-                .resizable()
-                .aspectRatio(contentMode: layout.contentMode)
-                .clipped()
-                .offset(x: layout.offsetX, y: layout.offsetY)
+        .background(alignment:layout.alignment){
+            Circle()
+                .fill(
+                    RadialGradient(colors: [.blue,.black], center: .center, startRadius: 0, endRadius: 250))
+                .blur(radius: 100)
+                .frame(width:200,height:200)
+                .offset(x: layout.offsetX,y: layout.offsetY)
                 .scaleEffect(layout.scale)
-                .onTapGesture {
-                    successLogin.toggle()
-                }
         }
+
     }
 }
 
 #Preview {
-    LoginView().padding()
+
+    LoginView().padding().environment(AuthManager())
 }

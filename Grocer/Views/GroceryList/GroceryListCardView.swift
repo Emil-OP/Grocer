@@ -47,13 +47,13 @@ struct GroceryListCardView: View {
         }
         .padding()
         .frame(maxWidth: 175)
-        .grayscale(groceryList.isActive ? 0 : 1)
-        .overlay(groceryList.isActive ? .clear : .black.opacity(0.8))
         .glassEffect(
             .regular.interactive(),
             in: RoundedRectangle(cornerRadius: 20)
         )
+
         .scaleEffect(groceryList.isActive ? 1 : 0.95)
+        .grayscale(groceryList.isActive ? 0 : 1)
         .onTapGesture {
             withAnimation(){
                 groceryList.isActive.toggle()
