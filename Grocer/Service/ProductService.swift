@@ -14,6 +14,8 @@ protocol ProductServiceProtocol {
 
 class ProductService : ProductServiceProtocol {
     
+    let accessToken = KeychainHelper.shared.readString(for: "access_token") ?? ""
+    
     let baseURL = Bundle.main.object(forInfoDictionaryKey: "BASE_URL") as? String
     
     func fetchProducts(page : Int,limit : Int = 20) async throws -> [Product]{
@@ -21,12 +23,16 @@ class ProductService : ProductServiceProtocol {
         guard let baseURL else {
             throw URLError(.badURL)
         }
-        let endpoint = "\(baseURL)/products?page=\(page)&limit=\(limit)"
         
-        guard let url = URL(string: endpoint) else {
+        guard let url = URL(string: "\(baseURL)/products?page=\(page)&limit=\(limit)") else {
             throw URLError(.badURL)
         }
-        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        var request = URLRequest(url:url)
+        request.httpMethod = "GET"
+        request.setValue("application/json",forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        let (data, response) = try await URLSession.shared.data(for: request)
         guard let response = response as? HTTPURLResponse, response.statusCode == 200
         else { throw URLError(.badServerResponse)}
         
@@ -37,11 +43,16 @@ class ProductService : ProductServiceProtocol {
         guard let baseURL else {
             throw URLError(.badURL)
         }
-        let endpoint  = "\(baseURL)/search?q=\(productName)"
-        guard let url = URL(string: endpoint) else {
+        guard let url = URL(string: "\(baseURL)/search?q=\(productName)") else {
             throw URLError(.badURL)
         }
-        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        var request = URLRequest(url:url)
+        request.httpMethod = "GET"
+        request.setValue("application/json",forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
         guard let response = response as? HTTPURLResponse, response.statusCode == 200
         else { throw URLError(.badServerResponse)}
         

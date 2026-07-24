@@ -38,6 +38,7 @@ struct GroceryListsView: View {
                         }
                         .sheet(isPresented: $isForm) {
                             VStack(alignment:.leading, spacing:20) {
+                                Spacer()
                                 Text("Agregar lista nueva:")
                                     .font(.title2)
                                     .bold()
