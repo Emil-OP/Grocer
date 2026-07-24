@@ -19,9 +19,12 @@ private struct LayoutConfig {
 
 struct LoginView: View {
     @Environment(AuthManager.self) private var authManager
-    @State private var username = ""
-    @State private var password = ""
+    private var authService = AuthService()
+    @State private var name: String = ""
+    @State private var username: String = ""
+    @State private var password: String = ""
     @State private var successLogin: Bool = false
+    @State private var isRegistering: Bool = false
 
     private var layout: LayoutConfig {
         if successLogin {
@@ -57,8 +60,22 @@ struct LoginView: View {
             Spacer()
             if !successLogin {
                 VStack{
+                    if isRegistering{
+                        HStack {
+                            Image(systemName: "person.circle")
+                            TextField("Nombre", text: $name)
+                                .autocorrectionDisabled()
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                
+                        }
+                        .padding([.leading])
+                    }
+
+                    Divider()
+                        .padding([.leading, .trailing])
                     HStack {
-                        Image(systemName: "person.circle")
+                        Image(systemName: "person.text.rectangle")
                         TextField("Usuario", text: $username)
                             .autocorrectionDisabled()
                             .padding()
@@ -83,26 +100,27 @@ struct LoginView: View {
                     .regular,
                     in: RoundedRectangle(cornerRadius: 20)
                 )
-                Button {
-                    print("Login info submitted")
-                    withAnimation(.spring(duration: 1)) {
-                        successLogin.toggle()
-                    }
-                    Task {
-                        try? await Task.sleep(for: .seconds(1))
-                        authManager.login(with: "testToken")
-                    }
+                if !isRegistering{
+                    Button {
+                        print("Login info submitted")
+                        withAnimation(.spring(duration: 1)) {
+                            successLogin.toggle()
+                        }
+                        Task {
+                            try? await Task.sleep(for: .seconds(1))
+                            authManager.login(with: "testToken")
+                        }
 
-                } label: {
-                    HStack {
-                        Text("Iniciar sesión")
+                    } label: {
+                        HStack {
+                            Text("Iniciar sesión")
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 30)
+                        .padding([.leading, .trailing], 50)
                     }
-                    .frame(maxWidth: .infinity, minHeight: 30)
-                    .padding([.leading, .trailing], 50)
-                }
-                .padding([.top,.bottom], 10)
-                .buttonStyle(.glassProminent)
-                .frame(alignment: .center)
+                    .padding([.top,.bottom], 10)
+                    .buttonStyle(.glassProminent)
+                    .frame(alignment: .center)
 
                 HStack {
                     VStack {
@@ -115,7 +133,11 @@ struct LoginView: View {
                 }
                 .padding([.leading,.trailing])
                 
-                Button{}label:{
+                Button{
+                    withAnimation(.spring(duration: 0.5)) {
+                        isRegistering.toggle()
+                    }
+                }label:{
                     Text("Registrate")
                         .frame(maxWidth: .infinity, minHeight: 30)
                         .padding([.leading, .trailing], 50)
@@ -123,7 +145,54 @@ struct LoginView: View {
                 .buttonStyle(.glass)
                 .padding([.top,.bottom], 10)
                 .frame(alignment:.center)
+                
+                } else {
+                    Button {
+                        
+                        withAnimation(.spring(duration: 0.5)) {
+                            
+                        }
+                        Task {
+                            try? await Task.sleep(for: .seconds(0.5))
+                            
+                        }
 
+                    } label: {
+                        HStack {
+                            Text("Registrar")
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 30)
+                        .padding([.leading, .trailing], 50)
+                    }
+                    .padding([.top,.bottom], 10)
+                    .buttonStyle(.glassProminent)
+                    .frame(alignment: .center)
+
+                HStack {
+                    VStack {
+                        Divider()
+                    }
+                    Text("o")
+                    VStack {
+                        Divider()
+                    }
+                }
+                .padding([.leading,.trailing])
+                
+                Button{
+                    withAnimation(.spring(duration: 0.5)) {
+                        isRegistering.toggle()
+                    }
+                }label:{
+                    Text("Cancelar")
+                        .frame(maxWidth: .infinity, minHeight: 30)
+                        .padding([.leading, .trailing], 50)
+                }
+                .buttonStyle(.glass)
+                .padding([.top,.bottom], 10)
+                .frame(alignment:.center)
+                }
+                
                 Spacer()
                 
                 HStack() {
