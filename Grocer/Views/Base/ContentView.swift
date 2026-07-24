@@ -25,6 +25,9 @@ struct ContentView: View {
         VStack{
             if !authManager.isAuthenticated{
                 LoginView()
+                    .onAppear {
+                        selectedTab = .myLists
+                    }
             } else {
                 TabView(selection: $selectedTab) {
                     Tab("Home", systemImage: "house", value: .home) {
@@ -34,12 +37,15 @@ struct ContentView: View {
                         GroceryListsView(groceryLists: mockGroceryLists)
                     }
                     Tab("Settings", systemImage: "gearshape.fill", value: .settings) {
-                        Text("Under construction")
+                        Button{
+                            authManager.logout()
+                        } label: {
+                            Text("Cerrar sesión")
+                        }
                     }
                     Tab(value: .search, role: .search) {
                         ProductsView()
                     }
-                    
                 }
                 .environment(productRepo)
                 .tabBarMinimizeBehavior(.onScrollDown)

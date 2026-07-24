@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const bcrypt = require('bcrypt')
 const port = process.env.PORT || 3300
+const jwt = require('jsonwebtoken');
 
 app.use(express.json())
 
@@ -172,7 +173,7 @@ app.post('/register',async (req, res)=>{
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
-        const registerQuery = `INSERT INTO users (username, password_hash, name) VALUES ($1 ,$2, $3) RETURNING id, username`
+        const registerQuery = `INSERT INTO users (username, password_hash, name) VALUES ($1 ,$2, $3) RETURNING id, username, name`
         const registerQueryResult = await pool.query(registerQuery, [username, hashedPassword, name])
 
         const newUser = registerQueryResult.rows[0]
@@ -185,10 +186,24 @@ app.post('/register',async (req, res)=>{
             process.env.JWT_SECRET,
             {expiresIn: '15m'}
         )
+        const refreshToken = jwt.sign(
+            tokenPayload,
+            process.env.JWT_REFRESH_SECRET,
+            {expiresIn: '7d'}
+        )
+        const hashedRefreshToken = await bcrypt.hash(refreshToken, 10)
+
+        const expiresAt = new Date()
+        expiresAt.setDate(expiresAt.getDate() + 7)
+
+        const refreshTokenQuery = `INSERT INTO refresh_tokens (user_id, refresh_token_hash, expires_at) VALUES ($1, $2, $3)`
+
+        const refreshQueryResult = await pool.query(refreshTokenQuery,[newUser.id,hashedRefreshToken,expiresAt])
 
         res.status(201).json({
             message: "User registered.",
             access_token: accessToken,
+            refresh_token: refreshToken,
             username: newUser.username,
             name: newUser.name
         })
@@ -253,8 +268,8 @@ app.post('/login', async (req, res)=>{
 
         res.status(200).json({
             message: "Login successful",
-            accessToken: accessToken,
-            refreshToken: refreshToken,
+            access_token: accessToken,
+            refresh_token: refreshToken,
             user: {
                 id: user.id,
                 username: user.username,
