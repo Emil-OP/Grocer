@@ -23,7 +23,7 @@ struct ContentView: View {
     var body: some View {
         
         VStack{
-            if authManager.isAuthenticated{
+            if !authManager.isAuthenticated{
                 LoginView()
             } else {
                 TabView(selection: $selectedTab) {
@@ -46,6 +46,8 @@ struct ContentView: View {
             }
         }
         .padding()
+        .ignoresSafeArea()
+        
         
     }
         

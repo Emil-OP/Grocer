@@ -12,26 +12,79 @@ struct GroceryListsView: View {
     @State var groceryLists: [GroceryList]
 
     @State var masterList: [GroceryListItem] = []
+    
+    @State var isForm: Bool = false
+    @State var listName: String = ""
 
     var body: some View {
         VStack {
             ScrollView(.horizontal) {
                 HStack {
+                    VStack{
+                        Image(systemName: "plus.circle.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .foregroundStyle(.gray)
+                    }
+                        .padding()
+                        .frame(maxWidth:80)
+                        .glassEffect(
+                            .clear.interactive(),
+                            in: RoundedRectangle(cornerRadius: 20)
+                        )
+                        .opacity(0.5)
+                        .onTapGesture {
+                            isForm.toggle()
+                        }
+                        .sheet(isPresented: $isForm) {
+                            VStack(alignment:.leading, spacing:20) {
+                                Text("Agregar lista nueva:")
+                                    .font(.title2)
+                                    .bold()
+                                Text("Nombre:")
+                                    .bold()
+                                TextField(text: $listName) {
+                                    Text("Ej: Parrillada de Playa")
+                                }
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20)
+                                )
+                                
+                                Button {
+                                    groceryLists.insert(GroceryList(name: listName, items: [], purchasedItems: []), at: 0)
+                                    listName = ""
+                                    isForm.toggle()
+                                } label: {
+                                    Text("Agregar lista nueva")
+                                        .frame(maxWidth:.infinity)
+                                }
+                                .buttonStyle(.glassProminent)
+
+                            }
+                            .padding()
+                            .presentationDetents([.height(200)])
+                        }
+
+
                     ForEach($groceryLists) { list in
                         GroceryListCardView(groceryList: list)
 
                     }
                 }
-                .padding()
+                .frame(maxWidth: .infinity, maxHeight: 150)
             }
             .scrollIndicators(.hidden)
 
             List(masterList) { item in
                 GroceryListItemRow(product: item)
+                    .listRowInsets(EdgeInsets())
             }.scrollIndicators(.hidden)
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
-                .listRowSpacing(-23)
+                .listRowSpacing(7)
+                
+                
         }
         .onAppear {
             buildMasterLists()
@@ -42,19 +95,20 @@ struct GroceryListsView: View {
             }
         }
     }
+    
     func buildMasterLists() {
         var tempMasterList: [GroceryListItem] = []
-
+        
         for groceryList in groceryLists {
-            if groceryList.isActive {
+            if groceryList.isActive {	
                 for item in groceryList.items {
                     tempMasterList.append(item)
                 }
             }
         }
-
+        
         var tempList: [GroceryListItem] = []
-
+        
         for item in tempMasterList {
             let duplicates = tempMasterList.filter { $0.id == item.id }
             if duplicates.count > 1 {
@@ -68,7 +122,7 @@ struct GroceryListsView: View {
                 tempList.append(item)
             }
         }
-
+        
         masterList = tempList.sorted{$0.item.supermarketName < $1.item.supermarketName}
     }
 }
