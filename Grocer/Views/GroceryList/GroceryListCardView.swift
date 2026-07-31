@@ -32,21 +32,10 @@ struct GroceryListCardView: View {
                 .font(.caption)
                 .foregroundStyle(.gray.opacity(0.8))
             }
-            ZStack{
-                Circle()
-                    .stroke(.gray.opacity(0.2),lineWidth: 10)
-                    .frame(width: 80, height:80)
-                Text("%\(completedPercentage.roundedString(precision: 0))")
-                Circle()
-                    .trim(from: 0.0, to: CGFloat(completedPercentage)/100)
-                    .stroke(.green,lineWidth: 10)
-                    .frame(width: 80, height:80)
-                    .rotationEffect(.degrees(-90))
-                    .animation(.easeInOut(duration:1.0),value:CGFloat(completedPercentage/100))
-            }
+            ProgressCircleView(numerator: groceryList.purchasedItems.count, denominator: groceryList.items.count)
         }
         .padding()
-        .frame(maxWidth: 175)
+        .frame(width: 150,height: 140)
         .glassEffect(
             .regular.interactive(),
             in: RoundedRectangle(cornerRadius: 20)

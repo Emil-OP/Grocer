@@ -12,6 +12,7 @@ let mockGroceryLists: [GroceryList] = [
         
     // 1. A standard list (Weekend BBQ)
     GroceryList(
+        id: UUID(),
         name: "Weekend BBQ 🥩",
         items: [
             GroceryListItem(
@@ -44,6 +45,7 @@ let mockGroceryLists: [GroceryList] = [
     
     // 2. A list with a mix of pending and purchased products
     GroceryList(
+        id: UUID(),
         name: "Weekly Essentials 🛒",
         items: [
             GroceryListItem(
@@ -89,6 +91,7 @@ let mockGroceryLists: [GroceryList] = [
     
     // 3. A list heavily focused on party items, overlapping some IDs for testing!
     GroceryList(
+        id: UUID(),
         name: "Party Supplies 🎉",
         items: [
             GroceryListItem(

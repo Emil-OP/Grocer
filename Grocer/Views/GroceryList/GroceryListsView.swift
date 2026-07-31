@@ -12,22 +12,28 @@ struct GroceryListsView: View {
     @State var groceryLists: [GroceryList]
 
     @State var masterList: [GroceryListItem] = []
-    
+    @State var purchasedMasterList: [GroceryListItem] = []
+
     @State var isForm: Bool = false
     @State var listName: String = ""
+    @State var isValid = true
+    @State var isNewListSubmitted = false
+    @State var currentListId: UUID = UUID()
 
     var body: some View {
-        VStack {
-            ScrollView(.horizontal) {
-                HStack {
-                    VStack{
-                        Image(systemName: "plus.circle.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .foregroundStyle(.gray)
-                    }
+        NavigationStack {
+            VStack {
+                ScrollView(.horizontal) {
+                    HStack {
+                        VStack {
+                            Image(systemName: "plus.circle.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .foregroundStyle(.gray)
+                        }
                         .padding()
-                        .frame(maxWidth:80)
+                        .frame(maxWidth: 80)
+                        .frame(height: 140)
                         .glassEffect(
                             .clear.interactive(),
                             in: RoundedRectangle(cornerRadius: 20)
@@ -37,7 +43,8 @@ struct GroceryListsView: View {
                             isForm.toggle()
                         }
                         .sheet(isPresented: $isForm) {
-                            VStack(alignment:.leading, spacing:20) {
+
+                            VStack(alignment: .leading, spacing: 20) {
                                 Spacer()
                                 Text("Agregar lista nueva:")
                                     .font(.title2)
@@ -50,81 +57,144 @@ struct GroceryListsView: View {
                                 .padding()
                                 .background(
                                     RoundedRectangle(cornerRadius: 20)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 20)
+                                                .stroke(
+                                                    isValid ? .clear : .red,
+                                                    lineWidth: 3
+                                                )
+                                        )
                                 )
-                                
+
+                                Text("Campo requerido")
+                                    .foregroundStyle(.red)
+                                    .font(.caption)
+                                    .opacity(isValid ? 0 : 1)
+
                                 Button {
-                                    groceryLists.insert(GroceryList(name: listName, items: [], purchasedItems: []), at: 0)
-                                    listName = ""
-                                    isForm.toggle()
+                                    if !listName.isEmpty {
+                                        groceryLists.insert(
+                                            GroceryList(
+                                                id: UUID(),
+                                                name: listName,
+                                                items: [],
+                                                purchasedItems: []
+                                            ),
+                                            at: 0
+                                        )
+                                        listName = ""
+                                        isValid = true
+                                        currentListId = groceryLists[0].id
+                                        isNewListSubmitted = true
+                                        isForm.toggle()
+                                    } else {
+                                        withAnimation {
+                                            isValid.toggle()
+                                        }
+                                    }
                                 } label: {
                                     Text("Agregar lista nueva")
-                                        .frame(maxWidth:.infinity)
+                                        .frame(maxWidth: .infinity)
                                 }
                                 .buttonStyle(.glassProminent)
 
                             }
                             .padding()
-                            .presentationDetents([.height(200)])
+                            .presentationDetents([.height(250)])
+
                         }
 
+                        ForEach($groceryLists) { list in
+                            GroceryListCardView(groceryList: list)
 
-                    ForEach($groceryLists) { list in
-                        GroceryListCardView(groceryList: list)
-
+                        }
                     }
+                    .frame(maxWidth: .infinity, maxHeight: 150)
                 }
-                .frame(maxWidth: .infinity, maxHeight: 150)
-            }
-            .scrollIndicators(.hidden)
+                .scrollIndicators(.hidden)
 
-            List(masterList) { item in
-                GroceryListItemRow(product: item)
-                    .listRowInsets(EdgeInsets())
-            }.scrollIndicators(.hidden)
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-                .listRowSpacing(7)
-                
-                
-        }
-        .onAppear {
-            buildMasterLists()
-        }
-        .onChange(of: groceryLists) { oldValue, newValue in
-            withAnimation {
+                ScrollView {
+                    ForEach(masterList) { item in
+                        GroceryListItemRow(product: item)
+                            .listRowInsets(EdgeInsets())
+                    }.scrollIndicators(.hidden)
+                        .listStyle(.plain)
+                        .scrollContentBackground(.hidden)
+                        .listRowSpacing(7)
+                    ForEach(purchasedMasterList) { item in
+                        GroceryListItemRow(product: item)
+                            .listRowInsets(EdgeInsets())
+                            .grayscale(1)
+                            .overlay(Color.black.opacity(0.8))
+                    }.scrollIndicators(.hidden)
+                        .listStyle(.plain)
+                        .scrollContentBackground(.hidden)
+                        .listRowSpacing(7)
+                }
+
+            }
+            .onAppear {
                 buildMasterLists()
+            }
+            .onChange(of: groceryLists) { oldValue, newValue in
+                withAnimation {
+                    buildMasterLists()
+                }
+            }
+            .navigationDestination(isPresented: $isNewListSubmitted) {
+                GroceryListEditView(currentListId: currentListId)
+                
             }
         }
     }
-    
+
     func buildMasterLists() {
         var tempMasterList: [GroceryListItem] = []
-        
+
         for groceryList in groceryLists {
-            if groceryList.isActive {	
+            if groceryList.isActive {
                 for item in groceryList.items {
                     tempMasterList.append(item)
                 }
             }
         }
+        masterList = unDupeList(dupedList: tempMasterList)
         
+        tempMasterList = []
+        
+        for groceryList in groceryLists {
+            if groceryList.isActive {
+                for item in groceryList.purchasedItems {
+                    tempMasterList.append(item)
+                }
+            }
+        }
+        purchasedMasterList = unDupeList(dupedList: tempMasterList)
+        
+        
+    }
+    
+    func unDupeList(dupedList: [GroceryListItem]) -> [GroceryListItem]{
         var tempList: [GroceryListItem] = []
-        
-        for item in tempMasterList {
-            let duplicates = tempMasterList.filter { $0.id == item.id }
+        var list = dupedList
+
+        for item in list {
+            let duplicates = list.filter { $0.id == item.id }
             if duplicates.count > 1 {
-                tempMasterList = tempMasterList.filter { $0.id != item.id }
+                list = list.filter { $0.id != item.id }
                 let itemCount = duplicates.reduce(0) { $0 + $1.quantity }
                 var tempItem = item
                 tempItem.quantity = itemCount
                 tempList.append(tempItem)
             }
-            if (tempList.filter { $0.id == item.id }.count == 0) {
+            if tempList.filter({ $0.id == item.id }).count == 0 {
                 tempList.append(item)
             }
         }
-        
-        masterList = tempList.sorted{$0.item.supermarketName < $1.item.supermarketName}
+
+        return tempList.sorted {
+            $0.item.supermarketName < $1.item.supermarketName
+        }
     }
 }
 
@@ -140,8 +210,7 @@ struct GroceryListItemRow: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 40)
                     .cornerRadius(10)
-                
-                
+
                 VStack(alignment: .leading) {
                     Text(product.item.productName)
                         .lineLimit(1)
@@ -152,7 +221,7 @@ struct GroceryListItemRow: View {
                     .font(.caption)
                     .foregroundStyle(.gray.opacity(0.8))
                 }
-                
+
                 Spacer()
                 VStack(alignment: .trailing) {
                     Text(
@@ -176,7 +245,6 @@ struct GroceryListItemRow: View {
         .listRowBackground(Color.clear)
     }
 }
-
 
 #Preview {
     GroceryListsView(groceryLists: mockGroceryLists)

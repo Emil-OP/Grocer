@@ -1,0 +1,60 @@
+//
+//  GroceryListRepository.swift
+//  Grocer
+//
+//  Created by Emil on 7/31/26.
+//
+
+import Foundation
+
+@Observable
+class GroceryListRepository{
+    
+    private(set) var groceryLists: [GroceryList] = []
+    private(set) var isLoading: Bool = false
+    private let groceryListService: any GroceryListServiceProtocol
+    
+    init(groceryListService: any GroceryListServiceProtocol = GroceryListService()) {
+        self.groceryListService = groceryListService
+    }
+    
+    func loadGroceryLists() async {
+        guard !isLoading else {return}
+        isLoading = true
+        defer { isLoading = false}
+        
+        do {
+            groceryLists = try await groceryListService.fetchGroceryLists()
+        } catch {
+            print("Failed to load grocery lists onto local repository: \(error.localizedDescription)")
+        }
+    }
+    
+    func createGroceryList(groceryListName: String) async {
+        do {
+            let newList = try await groceryListService.createGroceryList(groceryListName: groceryListName)
+            groceryLists.insert(newList, at: 0)
+        } catch {
+            print("Failed to add new grocery list onto local repository: \(error.localizedDescription)")
+        }
+    }
+    
+    func addItemToGroceryList(item: GroceryListItem, into listWithID: UUID) async {
+        do {
+            let updatedList = try await groceryListService.insertGroceryListItem(item: item, into: listWithID)
+            groceryLists = groceryLists.map{$0.id == updatedList.id ? updatedList : $0 }
+        } catch {
+            print("Failed to insert item into grocery list: \(error.localizedDescription)")
+        }
+    }
+    
+    func toggleItemAsPurchased(for productID: String, inList listID: UUID, isPurchased: Bool) async {
+        do{
+            let updatedList = try await groceryListService.toggleItemStatus(for: productID, inListWithID: listID, isPurchased: isPurchased)
+            groceryLists = groceryLists.map{$0.id == updatedList.id ? updatedList : $0 }
+        }catch{
+            print("Failed to toggle item: \(error.localizedDescription)")
+        }
+    }
+    
+}

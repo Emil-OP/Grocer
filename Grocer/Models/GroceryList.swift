@@ -7,11 +7,17 @@
 
 import Foundation
 
-struct GroceryList : Identifiable, Equatable {
-    let id = UUID()
+struct GroceryList : Decodable,Identifiable, Equatable {
+    var id: UUID
     var name : String
     let items : [GroceryListItem]
     let purchasedItems : [GroceryListItem]
     var isActive : Bool = true
-    //Do I need a creatorId in order to work with the databse or would it be more secure to do it within the database?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case items
+        case purchasedItems = "puchased_items"
+    }
 }
