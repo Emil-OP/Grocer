@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct GroceryListsView: View {
-
-    @State var groceryLists: [GroceryList]
+    @Environment(GroceryListRepository.self) private var groceryRepo
 
     @State var masterList: [GroceryListItem] = []
     @State var purchasedMasterList: [GroceryListItem] = []
@@ -72,24 +71,26 @@ struct GroceryListsView: View {
                                     .opacity(isValid ? 0 : 1)
 
                                 Button {
-                                    if !listName.isEmpty {
-                                        groceryLists.insert(
-                                            GroceryList(
-                                                id: UUID(),
-                                                name: listName,
-                                                items: [],
-                                                purchasedItems: []
-                                            ),
-                                            at: 0
-                                        )
-                                        listName = ""
-                                        isValid = true
-                                        currentListId = groceryLists[0].id
-                                        isNewListSubmitted = true
-                                        isForm.toggle()
-                                    } else {
-                                        withAnimation {
-                                            isValid.toggle()
+                                    Task {
+                                        if !listName.isEmpty {
+                                            await groceryRepo.createGroceryList(
+                                                groceryListName: listName
+                                            )
+                                            listName = ""
+                                            isValid = true
+                                            if let newestList = groceryRepo
+                                                .groceryLists.first
+                                            {
+                                                currentListId =
+                                                    groceryRepo.groceryLists[0]
+                                                    .id
+                                            }
+                                            isNewListSubmitted = true
+                                            isForm.toggle()
+                                        } else {
+                                            withAnimation {
+                                                isValid.toggle()
+                                            }
                                         }
                                     }
                                 } label: {
@@ -104,46 +105,67 @@ struct GroceryListsView: View {
 
                         }
 
-                        ForEach($groceryLists) { list in
-                            GroceryListCardView(groceryList: list)
+                        if groceryRepo.groceryLists.isEmpty {
+                            Text(
+                                "Aún no has creado una lista de compras!\nPulsa aqui para empezar!"
+                            )
+                        } else {
+                            ForEach(groceryRepo.groceryLists) { list in
+                                GroceryListCardView(groceryList: list)
 
+                            }
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: 150)
                 }
                 .scrollIndicators(.hidden)
 
-                ScrollView {
-                    ForEach(masterList) { item in
-                        GroceryListItemRow(product: item)
-                            .listRowInsets(EdgeInsets())
-                    }.scrollIndicators(.hidden)
-                        .listStyle(.plain)
-                        .scrollContentBackground(.hidden)
-                        .listRowSpacing(7)
-                    ForEach(purchasedMasterList) { item in
-                        GroceryListItemRow(product: item)
-                            .listRowInsets(EdgeInsets())
-                            .grayscale(1)
-                            .overlay(Color.black.opacity(0.8))
-                    }.scrollIndicators(.hidden)
-                        .listStyle(.plain)
-                        .scrollContentBackground(.hidden)
-                        .listRowSpacing(7)
+                if groceryRepo.groceryLists.isEmpty {
+                    Spacer()
+                    Image(systemName: "checklist")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 100)
+                        .foregroundStyle(.gray.opacity(0.2))
+                    Spacer()
+                } else {
+                    ScrollView {
+                        ForEach(masterList) { item in
+                            GroceryListItemRow(product: item)
+                                .listRowInsets(EdgeInsets())
+                        }.scrollIndicators(.hidden)
+                            .listStyle(.plain)
+                            .scrollContentBackground(.hidden)
+                            .listRowSpacing(7)
+                        ForEach(purchasedMasterList) { item in
+                            GroceryListItemRow(product: item)
+                                .listRowInsets(EdgeInsets())
+                                .grayscale(1)
+                                .overlay(Color.black.opacity(0.8))
+                        }.scrollIndicators(.hidden)
+                            .listStyle(.plain)
+                            .scrollContentBackground(.hidden)
+                            .listRowSpacing(7)
+                    }
                 }
 
             }
             .onAppear {
                 buildMasterLists()
             }
-            .onChange(of: groceryLists) { oldValue, newValue in
+            .onChange(of: groceryRepo.groceryLists) { oldValue, newValue in
                 withAnimation {
                     buildMasterLists()
                 }
             }
             .navigationDestination(isPresented: $isNewListSubmitted) {
                 GroceryListEditView(currentListId: currentListId)
-                
+
+            }
+        }
+        .task {
+            if groceryRepo.groceryLists.isEmpty {
+                await groceryRepo.loadGroceryLists()
             }
         }
     }
@@ -151,7 +173,7 @@ struct GroceryListsView: View {
     func buildMasterLists() {
         var tempMasterList: [GroceryListItem] = []
 
-        for groceryList in groceryLists {
+        for groceryList in groceryRepo.groceryLists {
             if groceryList.isActive {
                 for item in groceryList.items {
                     tempMasterList.append(item)
@@ -159,10 +181,10 @@ struct GroceryListsView: View {
             }
         }
         masterList = unDupeList(dupedList: tempMasterList)
-        
+
         tempMasterList = []
-        
-        for groceryList in groceryLists {
+
+        for groceryList in groceryRepo.groceryLists {
             if groceryList.isActive {
                 for item in groceryList.purchasedItems {
                     tempMasterList.append(item)
@@ -170,82 +192,56 @@ struct GroceryListsView: View {
             }
         }
         purchasedMasterList = unDupeList(dupedList: tempMasterList)
-        
-        
-    }
-    
-    func unDupeList(dupedList: [GroceryListItem]) -> [GroceryListItem]{
-        var tempList: [GroceryListItem] = []
-        var list = dupedList
 
-        for item in list {
-            let duplicates = list.filter { $0.id == item.id }
-            if duplicates.count > 1 {
-                list = list.filter { $0.id != item.id }
-                let itemCount = duplicates.reduce(0) { $0 + $1.quantity }
-                var tempItem = item
-                tempItem.quantity = itemCount
-                tempList.append(tempItem)
-            }
-            if tempList.filter({ $0.id == item.id }).count == 0 {
-                tempList.append(item)
+    }
+
+    //    func unDupeList(dupedList: [GroceryListItem]) -> [GroceryListItem]{
+    //        var tempList: [GroceryListItem] = []
+    //        var list = dupedList
+    //
+    //        for item in list {
+    //            let duplicates = list.filter { $0.id == item.id }
+    //            if duplicates.count > 1 {
+    //                list = list.filter { $0.id != item.id }
+    //                let itemCount = duplicates.reduce(0) { $0 + $1.quantity }
+    //                var tempItem = item
+    //                tempItem.quantity = itemCount
+    //                tempList.append(tempItem)
+    //            }
+    //            if tempList.filter({ $0.id == item.id }).count == 0 {
+    //                tempList.append(item)
+    //            }
+    //        }
+    //
+    //        return tempList.sorted {
+    //            $0.item.supermarketName < $1.item.supermarketName
+    //        }
+    //    }
+    //}
+    func unDupeList(dupedList: [GroceryListItem]) -> [GroceryListItem] {
+        // 1. Create a dictionary to hold unique items by their ID
+        var mergedItems: [String: GroceryListItem] = [:]  // Use your item's ID type if not UUID
+
+        // 2. Loop exactly once (O(N) time complexity)
+        for item in dupedList {
+            if var existingItem = mergedItems[item.id] {
+                // If it exists, just add the quantity
+                existingItem.quantity += item.quantity
+                mergedItems[item.id] = existingItem
+            } else {
+                // If it's new, add it to the dictionary
+                mergedItems[item.id] = item
             }
         }
 
-        return tempList.sorted {
+        // 3. Convert back to an array and sort
+        return mergedItems.values.sorted {
             $0.item.supermarketName < $1.item.supermarketName
         }
     }
 }
 
-struct GroceryListItemRow: View {
-
-    let product: GroceryListItem
-
-    var body: some View {
-        HStack {
-            HStack(spacing: 10) {
-                rowLogo(for: product.item.supermarketName)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 40)
-                    .cornerRadius(10)
-
-                VStack(alignment: .leading) {
-                    Text(product.item.productName)
-                        .lineLimit(1)
-                        .padding(.leading, 0)
-                    Text(
-                        "\(product.item.measurement.roundedString()) \(product.item.measurementDescription)"
-                    )
-                    .font(.caption)
-                    .foregroundStyle(.gray.opacity(0.8))
-                }
-
-                Spacer()
-                VStack(alignment: .trailing) {
-                    Text(
-                        "\(product.item.price.roundedString())"
-                    )
-                    .fontWeight(.bold)
-                    HStack {
-                        Text("Cant. ")
-                            .foregroundStyle(.gray.opacity(0.8))
-                        Text("\(product.quantity)")
-                    }
-                }
-            }
-            .padding(10)
-            .glassEffect(
-                .regular.interactive(),
-                in: RoundedRectangle(cornerRadius: 20)
-            )
-        }
-        .listRowSeparator(.hidden)
-        .listRowBackground(Color.clear)
-    }
-}
-
 #Preview {
-    GroceryListsView(groceryLists: mockGroceryLists)
+    GroceryListsView()
+        .environment(GroceryListRepository())
 }

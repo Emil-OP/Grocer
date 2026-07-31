@@ -9,7 +9,7 @@ import SwiftUI
 
 struct GroceryListCardView: View {
     
-    @Binding var groceryList : GroceryList
+    @State var groceryList : GroceryList
     private var completedPercentage : Double {
         guard !groceryList.items.isEmpty else {return 0}
         return (Double(groceryList.purchasedItems.count)/(Double(groceryList.items.count) + Double(groceryList.purchasedItems.count)))*100
@@ -55,5 +55,5 @@ struct GroceryListCardView: View {
     
     @Previewable @State var gList = mockGroceryLists
     
-    GroceryListCardView(groceryList: $gList[0])
+    GroceryListCardView(groceryList: gList[0])
 }

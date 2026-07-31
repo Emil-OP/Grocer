@@ -19,7 +19,7 @@ struct MainTabView: View {
                 Text("Under construction")
             }
             Tab("Lists",systemImage: "checklist.unchecked",value: .myLists) {
-                GroceryListsView(groceryLists: mockGroceryLists)
+                GroceryListsView()
             }
             Tab("Settings", systemImage: "gearshape.fill", value: .settings) {
                 Button{
@@ -41,4 +41,5 @@ struct MainTabView: View {
 #Preview {
     @Previewable @State var tab = TabItems.myLists
     MainTabView(selectedTab: $tab)
+        .environment(AuthManager())
 }

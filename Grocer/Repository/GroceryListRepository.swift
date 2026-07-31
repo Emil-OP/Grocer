@@ -24,7 +24,9 @@ class GroceryListRepository{
         defer { isLoading = false}
         
         do {
+            print("Loading grocery list onto local repo.")
             groceryLists = try await groceryListService.fetchGroceryLists()
+            print("Loaded grocery list onto local repo successffully")
         } catch {
             print("Failed to load grocery lists onto local repository: \(error.localizedDescription)")
         }
@@ -54,6 +56,19 @@ class GroceryListRepository{
             groceryLists = groceryLists.map{$0.id == updatedList.id ? updatedList : $0 }
         }catch{
             print("Failed to toggle item: \(error.localizedDescription)")
+        }
+    }
+    
+    func fetchGroceryListByID(listID: UUID) async {
+        do {
+            let fetchedList = try await groceryListService.fetchGroceryList(byID: listID)
+            if let index = groceryLists.firstIndex(where: { $0.id == listID }) {
+                groceryLists[index] = fetchedList
+            } else {
+                groceryLists.append(fetchedList)
+            }
+        } catch {
+            print("Failed to fetch specific grocery list: \(error.localizedDescription)")
         }
     }
     

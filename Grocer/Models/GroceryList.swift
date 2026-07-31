@@ -18,6 +18,6 @@ struct GroceryList : Decodable,Identifiable, Equatable {
         case id
         case name
         case items
-        case purchasedItems = "puchased_items"
+        case purchasedItems = "purchased_items"
     }
 }

@@ -8,22 +8,91 @@
 import SwiftUI
 
 struct GroceryListEditView: View {
-    
+    @Environment(GroceryListRepository.self) private var groceryListRepo
     let currentListId: UUID
+
     var groceryList: GroceryList {
-        for list in mockGroceryLists {
+        for list in groceryListRepo.groceryLists {
             if list.id == currentListId {
                 return list
             }
         }
-        return GroceryList(id: UUID(),name: "List not found, fix this error Emil", items: [], purchasedItems: [])
+        return mockGroceryLists[1]
     }
-    
+
+    var supermarketNames: Set<String> {
+        Set(groceryList.items.map { $0.item.supermarketName })
+    }
+
     var body: some View {
-        Text(groceryList.name)
+        VStack {
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(groceryList.name)
+                        .font(.title)
+                        .bold()
+                    HStack {
+                        ForEach(supermarketNames.sorted(), id: \.self) { name in
+                            rowLogo(for: name)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 40)
+                                .cornerRadius(10)
+                        }
+                    }
+                }
+                Spacer()
+                ProgressCircleView(
+                    numerator: groceryList.purchasedItems.count,
+                    denominator: groceryList.items.count
+                )
+            }
+            ScrollView {
+                ForEach(groceryList.items) { item in
+                    GroceryListItemRow(product: item)
+                        .listRowInsets(EdgeInsets())
+                }.scrollIndicators(.hidden)
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                    .listRowSpacing(7)
+                ForEach(groceryList.purchasedItems) { item in
+                    GroceryListItemRow(product: item)
+                        .listRowInsets(EdgeInsets())
+                        .grayscale(1)
+                        .overlay(Color.black.opacity(0.8))
+                }.scrollIndicators(.hidden)
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                    .listRowSpacing(7)
+            }
+        }
+        .overlay(alignment: .bottomTrailing) {
+            Circle()
+                .foregroundStyle(.blue)
+                .frame(width: 50)
+                .background(
+                    Image(systemName: "plus")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 20,height:20)
+                        .foregroundStyle(.primary)
+                )
+                .glassEffect(.regular.interactive())
+        }
+        
     }
 }
 
 #Preview {
-    GroceryListEditView(currentListId: UUID(uuidString: "7BA6B52C-1297-4B4A-BFAC-7B7BB8268712")!)
+    let mockRepo = GroceryListRepository()
+
+    return GroceryListEditView(
+        currentListId: UUID(uuidString: "8f37973f-7a74-41ab-b6aa-9007fcc42e7d")!
+    )
+    .padding()
+    .environment(mockRepo)
+    .task {
+        // This forces the preview to actually hit your local backend and load the real lists!
+        await mockRepo.loadGroceryLists()
+    }
 }

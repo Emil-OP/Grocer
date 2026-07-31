@@ -12,8 +12,9 @@ app.listen(port, ()=>{
 })
 
 const authenticateToken = (req,res,next)=>{
-    const authHeader = req.headers['Authorization'];
-    const token = authHeader && autherHeader.split(' ')[1];
+    console.log("Incoming Headers: ", req.headers);
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
     if(!token){
         return res.status(401).json({error: "Access token required."});
@@ -56,7 +57,7 @@ app.post('/register',async (req, res)=>{
         const accessToken = jwt.sign(
             tokenPayload,
             process.env.JWT_SECRET,
-            {expiresIn: '15m'}
+            {expiresIn: '15d'}
         )
         const refreshToken = jwt.sign(
             tokenPayload,
@@ -299,47 +300,61 @@ app.get('/grocery-lists', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.sub; 
 
+        // 🚨 THIS IS THE FIXED SQL QUERY 🚨
         const getListQuery = `
             SELECT 
+            gl.id as gl_id,
             gl.name as grocery_list_name,
-            p.name as product_name,p.price::FLOAT,p.measurement_description,p.measurement::FLOAT,p.supermarket,
-            gl_i.gl_id,gl_i.p_id,gl_i.amount,gl_i.is_checked
-            FROM grocery_list_items as gl_i
-            INNER JOIN grocery_lists as gl on gl_i.gl_id = gl.id
-            INNER JOIN products as p on gl_i.p_id = p.id
+            p.id as p_id,
+            p.product_name as product_name,
+            p.price::FLOAT,
+            p.measurement_description,
+            p.measurement::FLOAT,
+            p.supermarket,
+            gl_i.amount,
+            gl_i.is_checked
+            FROM grocery_lists as gl
+            LEFT JOIN grocery_list_items as gl_i on gl.id = gl_i.gl_id
+            LEFT JOIN products as p on gl_i.p_id = p.id
             WHERE gl.user_id = $1 
-            ORDER BY gl.id ASC;
+            ORDER BY gl.name ASC;
         `;
 
         const listQueryResult = await pool.query(getListQuery, [userId]);
         const groupedLists = {};
 
         for (const row of listQueryResult.rows) {
+            // Because we did a LEFT JOIN, we use gl_id to group them
             if (!groupedLists[row.gl_id]) {
                 groupedLists[row.gl_id] = {
                     id: row.gl_id,
-                    name: row.list_name,
+                    name: row.grocery_list_name,
                     items: [],
                     purchased_items: []
                 };
             }
-            const item = {
-                id: row.p_id,
-                name: row.product_name,
-                amount: row.amount,
-                price: row.price,
-                measurement: row.measurement,
-                measurementDescription: row.measurement_description,
-                supermarket: row.supermarket
-            };
-            if (row.is_checked) {
-                groupedLists[row.gl_id].purchasedItems.push(item);
-            } else {
-                groupedLists[row.gl_id].items.push(item);
+            
+            // Only create an item if the LEFT JOIN actually found a product
+            if (row.p_id != null) {
+                const item = {
+                    id: row.p_id,
+                    name: row.product_name,
+                    amount: row.amount,
+                    price: row.price,
+                    measurement: row.measurement,
+                    measurementDescription: row.measurement_description,
+                    supermarket: row.supermarket
+                };
+                
+                if (row.is_checked) {
+                    groupedLists[row.gl_id].purchased_items.push(item);
+                } else {
+                    groupedLists[row.gl_id].items.push(item);
+                }
             }
         }
+        
         const finalResponse = Object.values(groupedLists);
-
         res.status(200).json(finalResponse);
 
     } catch (error) {
@@ -376,7 +391,7 @@ app.post('/grocery-lists', authenticateToken, async (req, res) => {
             id: newList.id,
             name: newList.name,
             items: [],
-            purchasedItems: [],
+            purchased_items: [],
             isActive: true 
         };
 
@@ -415,7 +430,7 @@ app.post('/grocery-lists/:listId/items', authenticateToken, async (req, res) => 
         const getUpdatedListQuery = `
             SELECT 
                 gl.id as gl_id, gl.name as grocery_list_name,
-                p.id as p_id, p.name as product_name, 
+                p.id as p_id, p.product_name as product_name, 
                 p.price::FLOAT, p.measurement_description, p.measurement::FLOAT, 
                 p.supermarket, p.image_url,
                 gl_i.amount, gl_i.is_checked
@@ -423,7 +438,7 @@ app.post('/grocery-lists/:listId/items', authenticateToken, async (req, res) => 
             INNER JOIN grocery_lists as gl on gl_i.gl_id = gl.id
             INNER JOIN products as p on gl_i.p_id = p.id
             WHERE gl.id = $1 AND gl.user_id = $2
-            ORDER BY p.name ASC;
+            ORDER BY product_name ASC;
         `;
         
         const listQueryResult = await pool.query(getUpdatedListQuery, [listId, userId]);
@@ -508,7 +523,7 @@ app.patch('/grocery-lists/:listId/items/:productId', authenticateToken, async (r
         const getUpdatedListQuery = `
             SELECT 
                 gl.id as gl_id, gl.name as grocery_list_name,
-                p.id as p_id, p.name as product_name, 
+                p.id as p_id, p.product_name as product_name, 
                 p.price::FLOAT, p.measurement_description, p.measurement::FLOAT, 
                 p.supermarket, p.image_url,
                 gl_i.amount, gl_i.is_checked
@@ -516,7 +531,7 @@ app.patch('/grocery-lists/:listId/items/:productId', authenticateToken, async (r
             INNER JOIN grocery_lists as gl on gl_i.gl_id = gl.id
             INNER JOIN products as p on gl_i.p_id = p.id
             WHERE gl.id = $1 AND gl.user_id = $2
-            ORDER BY p.name ASC;
+            ORDER BY product_name ASC;
         `;
         
         const listQueryResult = await pool.query(getUpdatedListQuery, [listId, userId]);
@@ -560,6 +575,78 @@ app.patch('/grocery-lists/:listId/items/:productId', authenticateToken, async (r
 
     } catch (error) {
         console.error("Error toggling item status: ", error);
+        res.status(500).json({ error: "Internal server error." });
+    }
+});
+
+//Find grocery list by ID
+
+app.get('/grocery-lists/:listId', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.sub;
+        const { listId } = req.params;
+
+        // Note the LEFT JOINs here to handle empty lists!
+        const getListQuery = `
+            SELECT 
+                gl.id as gl_id, gl.name as grocery_list_name,
+                p.id as p_id, p.product_name as product_name, 
+                p.price::FLOAT, p.measurement_description, p.measurement::FLOAT, 
+                p.supermarket, p.image_url,
+                gl_i.amount, gl_i.is_checked
+            FROM grocery_lists as gl
+            LEFT JOIN grocery_list_items as gl_i on gl.id = gl_i.gl_id
+            LEFT JOIN products as p on gl_i.p_id = p.id
+            WHERE gl.id = $1 AND gl.user_id = $2
+            ORDER BY product_name ASC;
+        `;
+        
+        const listQueryResult = await pool.query(getListQuery, [listId, userId]);
+
+        if (listQueryResult.rows.length === 0) {
+            return res.status(404).json({ error: "Grocery list not found." });
+        }
+
+        // Initialize the base list using the first row
+        let fetchedList = {
+            id: listQueryResult.rows[0].gl_id,
+            name: listQueryResult.rows[0].grocery_list_name,
+            items: [],
+            purchasedItems: [],
+            isActive: true
+        };
+
+        // Populate the arrays only if products actually exist in this list
+        for (const row of listQueryResult.rows) {
+            if (row.p_id != null) { // Checks if the LEFT JOIN found an item
+                const product = {
+                    id: row.p_id,
+                    productName: row.product_name,
+                    price: row.price,
+                    measurementDescription: row.measurement_description,
+                    measurement: row.measurement,
+                    supermarketName: row.supermarket,
+                    imageURL: row.image_url || ""
+                };
+
+                const groceryListItem = {
+                    id: row.p_id, 
+                    item: product, 
+                    quantity: row.amount 
+                };
+
+                if (row.is_checked) {
+                    fetchedList.purchasedItems.push(groceryListItem);
+                } else {
+                    fetchedList.items.push(groceryListItem);
+                }
+            }
+        }
+
+        res.status(200).json(fetchedList);
+
+    } catch (error) {
+        console.error("Error fetching single grocery list: ", error);
         res.status(500).json({ error: "Internal server error." });
     }
 });
