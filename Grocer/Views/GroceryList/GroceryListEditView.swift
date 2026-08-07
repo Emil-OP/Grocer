@@ -47,6 +47,7 @@ struct GroceryListEditView: View {
                     denominator: groceryList.items.count
                 )
             }
+            .padding([.top, .leading, .trailing])
             ScrollView {
                 ForEach(groceryList.items) { item in
                     GroceryListItemRow(product: item)
@@ -78,8 +79,8 @@ struct GroceryListEditView: View {
                         .foregroundStyle(.primary)
                 )
                 .glassEffect(.regular.interactive())
+                .padding()
         }
-        
     }
 }
 
@@ -87,12 +88,11 @@ struct GroceryListEditView: View {
     let mockRepo = GroceryListRepository()
 
     return GroceryListEditView(
-        currentListId: UUID(uuidString: "8f37973f-7a74-41ab-b6aa-9007fcc42e7d")!
+        currentListId: UUID(uuidString: "0528017b-8810-4098-ad30-037cca4a8b86")!
     )
-    .padding()
+    .ignoresSafeArea(edges: .bottom)
     .environment(mockRepo)
     .task {
-        // This forces the preview to actually hit your local backend and load the real lists!
         await mockRepo.loadGroceryLists()
     }
 }

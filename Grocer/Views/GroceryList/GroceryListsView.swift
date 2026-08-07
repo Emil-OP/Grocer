@@ -12,11 +12,11 @@ struct GroceryListsView: View {
 
     @State var masterList: [GroceryListItem] = []
     @State var purchasedMasterList: [GroceryListItem] = []
-
+    @State var isActive: Bool = false
     @State var isForm: Bool = false
     @State var listName: String = ""
     @State var isValid = true
-    @State var isNewListSubmitted = false
+    @State var isEditingMode = false
     @State var currentListId: UUID = UUID()
 
     var body: some View {
@@ -78,14 +78,14 @@ struct GroceryListsView: View {
                                             )
                                             listName = ""
                                             isValid = true
-                                            if let newestList = groceryRepo
-                                                .groceryLists.first
+                                            if groceryRepo.groceryLists.first
+                                                != nil
                                             {
                                                 currentListId =
                                                     groceryRepo.groceryLists[0]
                                                     .id
                                             }
-                                            isNewListSubmitted = true
+                                            isEditingMode = true
                                             isForm.toggle()
                                         } else {
                                             withAnimation {
@@ -112,7 +112,18 @@ struct GroceryListsView: View {
                         } else {
                             ForEach(groceryRepo.groceryLists) { list in
                                 GroceryListCardView(groceryList: list)
-
+                                    .onTapGesture {
+                                        withAnimation {
+                                            groceryRepo.toggleListActiveState(
+                                                for: list.id
+                                            )
+                                        }
+                                    }
+                                    .onLongPressGesture {
+                                        currentListId = list.id
+                                        isEditingMode = true
+                                    }
+                                    
                             }
                         }
                     }
@@ -158,9 +169,9 @@ struct GroceryListsView: View {
                     buildMasterLists()
                 }
             }
-            .navigationDestination(isPresented: $isNewListSubmitted) {
+            .navigationDestination(isPresented: $isEditingMode) {
                 GroceryListEditView(currentListId: currentListId)
-
+                    .ignoresSafeArea(edges: .bottom)
             }
         }
         .task {
@@ -172,26 +183,20 @@ struct GroceryListsView: View {
 
     func buildMasterLists() {
         var tempMasterList: [GroceryListItem] = []
+        var tempPurchasedMasterList: [GroceryListItem] = []
 
         for groceryList in groceryRepo.groceryLists {
             if groceryList.isActive {
                 for item in groceryList.items {
                     tempMasterList.append(item)
                 }
-            }
-        }
-        masterList = unDupeList(dupedList: tempMasterList)
-
-        tempMasterList = []
-
-        for groceryList in groceryRepo.groceryLists {
-            if groceryList.isActive {
                 for item in groceryList.purchasedItems {
-                    tempMasterList.append(item)
+                    tempPurchasedMasterList.append(item)
                 }
             }
         }
-        purchasedMasterList = unDupeList(dupedList: tempMasterList)
+        masterList = unDupeList(dupedList: tempMasterList)
+        purchasedMasterList = unDupeList(dupedList: tempPurchasedMasterList)
 
     }
 

@@ -72,4 +72,10 @@ class GroceryListRepository{
         }
     }
     
+    func toggleListActiveState(for listId: UUID) {
+        if let index = groceryLists.firstIndex(where: { $0.id == listId }) {
+            groceryLists[index].isActive.toggle()
+        }
+    }
+    
 }

@@ -117,7 +117,7 @@ app.post('/login', async (req, res)=>{
         const accessToken = jwt.sign(
             accessTokenPayload,
             process.env.JWT_SECRET,
-            {expiresIn : '15m'}
+            {expiresIn : '999d'}
         )
 
         const refreshTokenPayload = {
@@ -310,12 +310,13 @@ app.get('/grocery-lists', authenticateToken, async (req, res) => {
             p.price::FLOAT,
             p.measurement_description,
             p.measurement::FLOAT,
-            p.supermarket,
-            gl_i.amount,
+            s.supermarket_name as supermarket, /* Fetch the string name and alias it */
+            gl_i.amount::INTEGER,
             gl_i.is_checked
             FROM grocery_lists as gl
             LEFT JOIN grocery_list_items as gl_i on gl.id = gl_i.gl_id
             LEFT JOIN products as p on gl_i.p_id = p.id
+            LEFT JOIN supermarkets as s on p.supermarket = s.id /* Join the supermarkets table */
             WHERE gl.user_id = $1 
             ORDER BY gl.name ASC;
         `;
@@ -433,7 +434,7 @@ app.post('/grocery-lists/:listId/items', authenticateToken, async (req, res) => 
                 p.id as p_id, p.product_name as product_name, 
                 p.price::FLOAT, p.measurement_description, p.measurement::FLOAT, 
                 p.supermarket, p.image_url,
-                gl_i.amount, gl_i.is_checked
+                gl_i.amount::INTEGER, gl_i.is_checked
             FROM grocery_list_items as gl_i
             INNER JOIN grocery_lists as gl on gl_i.gl_id = gl.id
             INNER JOIN products as p on gl_i.p_id = p.id
