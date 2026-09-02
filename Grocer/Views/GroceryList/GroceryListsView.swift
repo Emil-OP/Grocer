@@ -10,8 +10,29 @@ import SwiftUI
 struct GroceryListsView: View {
     @Environment(GroceryListRepository.self) private var groceryRepo
 
-    @State var masterList: [GroceryListItem] = []
-    @State var purchasedMasterList: [GroceryListItem] = []
+    var masterList: [GroceryListItem] {
+        var tempMasterList: [GroceryListItem] = []
+        for groceryList in groceryRepo.groceryLists {
+            if groceryList.isActive {
+                for item in groceryList.items {
+                    tempMasterList.append(item)
+                }
+            }
+        }
+        return tempMasterList.sorted{$0.item.supermarketName < $1.item.supermarketName}
+    }
+    var purchasedMasterList: [GroceryListItem] {
+        var tempPurchasedMasterList: [GroceryListItem] = []
+
+        for groceryList in groceryRepo.groceryLists {
+            if groceryList.isActive {
+                for item in groceryList.purchasedItems {
+                    tempPurchasedMasterList.append(item)
+                }
+            }
+        }
+        return tempPurchasedMasterList.sorted{$0.item.supermarketName < $1.item.supermarketName}
+    }
     @State var isActive: Bool = false
     @State var isForm: Bool = false
     @State var listName: String = ""
@@ -161,14 +182,6 @@ struct GroceryListsView: View {
                 }
 
             }
-            .onAppear {
-                buildMasterLists()
-            }
-            .onChange(of: groceryRepo.groceryLists) { oldValue, newValue in
-                withAnimation {
-                    buildMasterLists()
-                }
-            }
             .navigationDestination(isPresented: $isEditingMode) {
                 GroceryListEditView(currentListId: currentListId)
                     .ignoresSafeArea(edges: .bottom)
@@ -179,25 +192,6 @@ struct GroceryListsView: View {
                 await groceryRepo.loadGroceryLists()
             }
         }
-    }
-
-    func buildMasterLists() {
-        var tempMasterList: [GroceryListItem] = []
-        var tempPurchasedMasterList: [GroceryListItem] = []
-
-        for groceryList in groceryRepo.groceryLists {
-            if groceryList.isActive {
-                for item in groceryList.items {
-                    tempMasterList.append(item)
-                }
-                for item in groceryList.purchasedItems {
-                    tempPurchasedMasterList.append(item)
-                }
-            }
-        }
-        masterList = unDupeList(dupedList: tempMasterList)
-        purchasedMasterList = unDupeList(dupedList: tempPurchasedMasterList)
-
     }
 
     //    func unDupeList(dupedList: [GroceryListItem]) -> [GroceryListItem]{
@@ -229,13 +223,13 @@ struct GroceryListsView: View {
 
         // 2. Loop exactly once (O(N) time complexity)
         for item in dupedList {
-            if var existingItem = mergedItems[item.id] {
+            if var existingItem = mergedItems[item.id.uuidString] {
                 // If it exists, just add the quantity
                 existingItem.quantity += item.quantity
-                mergedItems[item.id] = existingItem
+                mergedItems[item.id.uuidString] = existingItem
             } else {
                 // If it's new, add it to the dictionary
-                mergedItems[item.id] = item
+                mergedItems[item.id.uuidString] = item
             }
         }
 

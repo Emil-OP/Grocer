@@ -16,4 +16,9 @@ struct Product: Decodable, Identifiable, Equatable {
     let measurement: Double
     let supermarketName: String
     let imageURL: String
+
+    static func == (lhs: Product, rhs: Product) -> Bool {
+        lhs.id == rhs.id
+    }
+
 }

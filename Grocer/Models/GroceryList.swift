@@ -9,10 +9,10 @@ import Foundation
 
 @Observable  class GroceryList : Decodable,Identifiable, Equatable {
     let id: UUID
-    var name : String
-    let items : [GroceryListItem]
-    let purchasedItems : [GroceryListItem]
-    var isActive : Bool = true
+    var name: String
+    let items: [GroceryListItem]
+    let purchasedItems: [GroceryListItem]
+    var isActive: Bool = true
     
     enum CodingKeys: String, CodingKey {
         case id

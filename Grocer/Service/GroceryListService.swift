@@ -139,7 +139,7 @@ struct GroceryListService: GroceryListServiceProtocol {
             let quantity: Int
         }
 
-        let payload = InsertPayload(productId: item.id, quantity: item.quantity)
+        let payload = InsertPayload(productId: item.id.uuidString, quantity: item.quantity)
 
         request.httpBody = try JSONEncoder().encode(payload)
 
