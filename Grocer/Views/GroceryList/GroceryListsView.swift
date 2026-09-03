@@ -207,47 +207,17 @@ struct GroceryListsView: View {
             }
         }
     }
-
-    //    func unDupeList(dupedList: [GroceryListItem]) -> [GroceryListItem]{
-    //        var tempList: [GroceryListItem] = []
-    //        var list = dupedList
-    //
-    //        for item in list {
-    //            let duplicates = list.filter { $0.id == item.id }
-    //            if duplicates.count > 1 {
-    //                list = list.filter { $0.id != item.id }
-    //                let itemCount = duplicates.reduce(0) { $0 + $1.quantity }
-    //                var tempItem = item
-    //                tempItem.quantity = itemCount
-    //                tempList.append(tempItem)
-    //            }
-    //            if tempList.filter({ $0.id == item.id }).count == 0 {
-    //                tempList.append(item)
-    //            }
-    //        }
-    //
-    //        return tempList.sorted {
-    //            $0.item.supermarketName < $1.item.supermarketName
-    //        }
-    //    }
-    //}
     func unDupeList(dupedList: [GroceryListItem]) -> [GroceryListItem] {
-        // 1. Create a dictionary to hold unique items by their ID
-        var mergedItems: [String: GroceryListItem] = [:]  // Use your item's ID type if not UUID
+        var mergedItems: [String: GroceryListItem] = [:]
 
-        // 2. Loop exactly once (O(N) time complexity)
         for item in dupedList {
             if var existingItem = mergedItems[item.id.uuidString] {
-                // If it exists, just add the quantity
                 existingItem.quantity += item.quantity
                 mergedItems[item.id.uuidString] = existingItem
             } else {
-                // If it's new, add it to the dictionary
                 mergedItems[item.id.uuidString] = item
             }
         }
-
-        // 3. Convert back to an array and sort
         return mergedItems.values.sorted {
             $0.item.supermarketName < $1.item.supermarketName
         }

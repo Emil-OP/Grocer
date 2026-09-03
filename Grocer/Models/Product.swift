@@ -21,9 +21,14 @@ struct Product: Decodable, Identifiable, Equatable {
         lhs.id == rhs.id
     }
     
-    enum CodingKeys: CodingKeys,String{
+    enum CodingKeys: String, CodingKey{
         case id
-        case productName 
+        case productName = "product_name"
+        case price
+        case measurementDescription = "measurement_description"
+        case measurement
+        case supermarketName = "supermarket_name"
+        case imageURL = "image_url"
     }
 
 }

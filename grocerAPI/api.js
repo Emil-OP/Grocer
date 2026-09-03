@@ -203,12 +203,12 @@ app.get('/products', async (req, res)=>{
         const offset = (page - 1) * limit
         const productQuery = `SELECT 
                             p.id,
-                            p.product_name as "productName", 
+                            p.product_name, 
                             p.price::FLOAT, 
-                            p.measurement_description as "measurementDescription", 
+                            p.measurement_description, 
                             p.measurement::FLOAT,
-                            p.image_url as "imageURL", 
-                            s.supermarket_name as "supermarketName"
+                            p.image_url, 
+                            s.supermarket_name
                         FROM 
                             products p 
                         JOIN 
@@ -237,12 +237,12 @@ app.get('/search', async (req, res) =>{
         const searchTerm = `%${req.query.q}%`
         const searchQuery = `SELECT 
                 p.id,
-                p.product_name as "productName", 
+                p.product_name, 
                 p.price::FLOAT,
-                p.measurement_description as "measurementDescription", 
+                p.measurement_description, 
                 p.measurement::FLOAT,
-                p.image_url as "imageURL",
-                s.supermarket_name as "supermarketName"
+                p.image_url,
+                s.supermarket_name
             FROM 
                 products p
             JOIN 
@@ -269,12 +269,12 @@ app.get('/product/:id', async (req, res) =>{
         const id = req.params.id
         const searchQuery = `SELECT 
                 p.id,
-                p.product_name as "productName", 
+                p.product_name, 
                 p.price::FLOAT,
-                p.measurement_description as "measurementDescription", 
+                p.measurement_description, 
                 p.measurement::FLOAT,
-                p.image_url as "imageURL",
-                s.supermarket_name as "supermarketName"
+                p.image_url,
+                s.supermarket_name
             FROM 
                 products p
             JOIN 
@@ -310,6 +310,7 @@ app.get('/grocery-lists', authenticateToken, async (req, res) => {
             p.price::FLOAT,
             p.measurement_description,
             p.measurement::FLOAT,
+            p.image_url,
             s.supermarket_name as supermarket, /* Fetch the string name and alias it */
             gl_i.amount::INTEGER,
             gl_i.is_checked
@@ -337,21 +338,27 @@ app.get('/grocery-lists', authenticateToken, async (req, res) => {
             
             // Only create an item if the LEFT JOIN actually found a product
             if (row.p_id != null) {
-                const item = {
+                const product = {
                     id: row.p_id,
-                    name: row.product_name,
+                    product_name: row.product_name,
                     amount: row.amount,
                     price: row.price,
                     measurement: row.measurement,
-                    measurementDescription: row.measurement_description,
-                    supermarket: row.supermarket,
+                    measurement_description: row.measurement_description,
+                    supermarket_name: row.supermarket,
+                    image_url: row.image_url || ""
+                };
+
+                const groceryListItem = {
+                    item: product,
+                    amount: parseInt(row.amount,10),
                     gl_id: row.gl_id
                 };
                 
                 if (row.is_checked) {
-                    groupedLists[row.gl_id].purchased_items.push(item);
+                    groupedLists[row.gl_id].purchased_items.push(groceryListItem);
                 } else {
-                    groupedLists[row.gl_id].items.push(item);
+                    groupedLists[row.gl_id].items.push(groceryListItem);
                 }
             }
         }
@@ -394,7 +401,7 @@ app.post('/grocery-lists', authenticateToken, async (req, res) => {
             name: newList.name,
             items: [],
             purchased_items: [],
-            isActive: true 
+            is_active: true 
         };
 
         // 201 Created is the standard HTTP status for a successful POST
@@ -454,25 +461,25 @@ app.post('/grocery-lists/:listId/items', authenticateToken, async (req, res) => 
             id: listId,
             name: listQueryResult.rows[0].grocery_list_name,
             items: [],
-            purchasedItems: [],
-            isActive: true
+            purchased_items: [],
+            is_active: true
         };
 
         for (const row of listQueryResult.rows) {
             const product = {
                 id: row.p_id,
-                productName: row.product_name,
+                product_name: row.product_name,
                 price: row.price,
-                measurementDescription: row.measurement_description,
+                measurement_description: row.measurement_description,
                 measurement: row.measurement,
-                supermarketName: row.supermarket,
-                imageURL: row.image_url || ""
+                supermarket_name: row.supermarket,
+                image_url: row.image_url || ""
             };
 
             const groceryListItem = {
                 id: row.p_id, 
                 item: product, 
-                quantity: row.amount 
+                quantity: parseInt(row.amount,10)
             };
 
             if (row.is_checked) {
@@ -499,6 +506,8 @@ app.patch('/grocery-lists/:listId/items/:productId', authenticateToken, async (r
         const { listId, productId } = req.params;
         const { isPurchased } = req.body;
 
+
+        console.log("Debug Params:", { isPurchased, listId, productId, userId });
         console.log("Raw body:", req.body);
         console.log("Value:", req.body.isPurchased);
         console.log("Type:", typeof req.body.isPurchased);
@@ -529,7 +538,7 @@ app.patch('/grocery-lists/:listId/items/:productId', authenticateToken, async (r
                 p.id as p_id, p.product_name as product_name, 
                 p.price::FLOAT, p.measurement_description, p.measurement::FLOAT, 
                 p.supermarket, p.image_url,
-                gl_i.amount, gl_i.is_checked
+                gl_i.amount::INT, gl_i.is_checked
             FROM grocery_list_items as gl_i
             INNER JOIN grocery_lists as gl on gl_i.gl_id = gl.id
             INNER JOIN products as p on gl_i.p_id = p.id
@@ -543,25 +552,25 @@ app.patch('/grocery-lists/:listId/items/:productId', authenticateToken, async (r
             id: listId,
             name: listQueryResult.rows[0].grocery_list_name,
             items: [],
-            purchasedItems: [],
-            isActive: true
+            purchased_items: [],
+            is_active: true
         };
 
         for (const row of listQueryResult.rows) {
             const product = {
                 id: row.p_id,
-                productName: row.product_name,
+                product_name: row.product_name,
                 price: row.price,
-                measurementDescription: row.measurement_description,
+                measurement_description: row.measurement_description,
                 measurement: row.measurement,
-                supermarketName: row.supermarket,
-                imageURL: row.image_url || ""
+                supermarket_name: row.supermarket,
+                image_url: row.image_url || ""
             };
 
             const groceryListItem = {
                 id: row.p_id, 
                 item: product, 
-                quantity: row.amount 
+                amount: parseInt(row.amount,10)
             };
 
             if (row.is_checked) {
@@ -610,10 +619,10 @@ app.get('/grocery-lists/:listId', authenticateToken, async (req, res) => {
         // Initialize the base list using the first row
         let fetchedList = {
             id: listQueryResult.rows[0].gl_id,
-            name: listQueryResult.rows[0].grocery_list_name,
+            list_name: listQueryResult.rows[0].grocery_list_name,
             items: [],
-            purchasedItems: [],
-            isActive: true
+            purchased_items: [],
+            is_active: true
         };
 
         // Populate the arrays only if products actually exist in this list
@@ -621,18 +630,18 @@ app.get('/grocery-lists/:listId', authenticateToken, async (req, res) => {
             if (row.p_id != null) { // Checks if the LEFT JOIN found an item
                 const product = {
                     id: row.p_id,
-                    productName: row.product_name,
+                    product_name: row.product_name,
                     price: row.price,
-                    measurementDescription: row.measurement_description,
+                    measurement_description: row.measurement_description,
                     measurement: row.measurement,
-                    supermarketName: row.supermarket,
-                    imageURL: row.image_url || ""
+                    supermarket_name: row.supermarket,
+                    image_url: row.image_url || ""
                 };
 
                 const groceryListItem = {
                     id: row.p_id, 
                     item: product, 
-                    quantity: row.amount 
+                    quantity: parseInt(row.amount,10) 
                 };
 
                 if (row.is_checked) {
