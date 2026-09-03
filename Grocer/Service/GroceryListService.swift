@@ -11,7 +11,7 @@ protocol GroceryListServiceProtocol {
     func fetchGroceryLists() async throws -> [GroceryList]
     func createGroceryList(groceryListName: String) async throws -> GroceryList
     func insertGroceryListItem(item: GroceryListItem, into listId: UUID) async throws -> GroceryList
-    func toggleItemStatus(for productId: String, inListWithID listId: UUID, isPurchased: Bool) async throws -> GroceryList
+    func toggleItemStatus(for productId: UUID, inListWithID listId: UUID, isPurchased: Bool) async throws -> GroceryList
     func fetchGroceryList(byID listId: UUID) async throws -> GroceryList
 }
 
@@ -159,19 +159,19 @@ struct GroceryListService: GroceryListServiceProtocol {
         }
     }
     
-    func toggleItemStatus(for productId: String, inListWithID listId: UUID, isPurchased: Bool) async throws -> GroceryList{
+    func toggleItemStatus(for productId: UUID, inListWithID listId: UUID, isPurchased: Bool) async throws -> GroceryList{
         guard let baseURL else {
             throw URLError(.badURL)
         }
 
         guard
             let url = URL(
-                string: "\(baseURL)/grocery-lists/\(listId.uuidString)/items/\(productId)"
+                string: "\(baseURL)/grocery-lists/\(listId.uuidString)/items/\(productId.uuidString)"
             )
         else {
             throw URLError(.badURL)
         }
-        
+        print(url)
         var request = URLRequest(url: url)
         request.httpMethod = "PATCH"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

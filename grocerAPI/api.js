@@ -344,7 +344,8 @@ app.get('/grocery-lists', authenticateToken, async (req, res) => {
                     price: row.price,
                     measurement: row.measurement,
                     measurementDescription: row.measurement_description,
-                    supermarket: row.supermarket
+                    supermarket: row.supermarket,
+                    gl_id: row.gl_id
                 };
                 
                 if (row.is_checked) {
@@ -496,14 +497,16 @@ app.patch('/grocery-lists/:listId/items/:productId', authenticateToken, async (r
     try {
         const userId = req.user.sub;
         const { listId, productId } = req.params;
-        const { isPurchased } = req.body; 
+        const { isPurchased } = req.body;
+
+        console.log("Raw body:", req.body);
+        console.log("Value:", req.body.isPurchased);
+        console.log("Type:", typeof req.body.isPurchased);
 
         if (typeof isPurchased !== 'boolean') {
             return res.status(400).json({ error: "isChecked boolean is required." });
         }
 
-        // 1. Update the item's checked status. 
-        // We use an EXISTS clause to ensure the user actually owns this grocery list!
         const updateItemQuery = `
             UPDATE grocery_list_items
             SET is_checked = $1
@@ -520,7 +523,6 @@ app.patch('/grocery-lists/:listId/items/:productId', authenticateToken, async (r
             return res.status(404).json({ error: "Item not found or unauthorized." });
         }
 
-        // 2. Fetch the fully updated list to return back to Swift
         const getUpdatedListQuery = `
             SELECT 
                 gl.id as gl_id, gl.name as grocery_list_name,
@@ -537,7 +539,6 @@ app.patch('/grocery-lists/:listId/items/:productId', authenticateToken, async (r
         
         const listQueryResult = await pool.query(getUpdatedListQuery, [listId, userId]);
 
-        // 3. Rebuild the Swift-friendly JSON structure
         let updatedList = {
             id: listId,
             name: listQueryResult.rows[0].grocery_list_name,
@@ -563,8 +564,6 @@ app.patch('/grocery-lists/:listId/items/:productId', authenticateToken, async (r
                 quantity: row.amount 
             };
 
-            // This is where the magic happens for your UI:
-            // The item will now automatically be sorted into the correct array!
             if (row.is_checked) {
                 updatedList.purchasedItems.push(groceryListItem);
             } else {

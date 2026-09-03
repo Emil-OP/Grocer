@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct Product: Decodable, Identifiable, Equatable {
-    let id: String
+    let id: UUID
     let productName: String
     let price: Double
     let measurementDescription: String
@@ -19,6 +19,11 @@ struct Product: Decodable, Identifiable, Equatable {
 
     static func == (lhs: Product, rhs: Product) -> Bool {
         lhs.id == rhs.id
+    }
+    
+    enum CodingKeys: CodingKeys,String{
+        case id
+        case productName 
     }
 
 }

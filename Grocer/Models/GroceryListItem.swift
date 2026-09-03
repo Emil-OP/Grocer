@@ -14,28 +14,16 @@ struct GroceryListItem: Decodable, Identifiable, Equatable {
     var parentLists: [UUID:Int] = [:]
 
     enum CodingKeys: String, CodingKey {
-        case id
+        case item
         case quantity = "amount"
-        case name
-        case price
-        case measurement
-        case measurementDescription
-        case supermarketName = "supermarket"
+        case parentID = "gl_id"
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.quantity = try container.decode(Int.self, forKey: .quantity)
-
-        self.item = Product(
-            id: try container.decode(String.self, forKey: .id),
-            productName: try container.decode(String.self, forKey: .name),
-            price: try container.decode(Double.self, forKey: .price),
-            measurementDescription: try container.decode(String.self, forKey: .measurementDescription),
-            measurement: try container.decode(Double.self, forKey: .measurement),
-            supermarketName: try container.decode(String.self,forKey: .supermarketName),
-            imageURL: ""
-        )
+        self.item = try container.decode(Product.self,forKey: .item)
+        self.parentLists[try container.decode(UUID.self,forKey: .parentID)] = try container.decode(Int.self, forKey: .quantity)
     }
 
     init(product: Product, quantity: Int = 1,parentLists: [UUID:Int]) {

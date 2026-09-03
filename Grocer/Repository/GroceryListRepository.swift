@@ -50,7 +50,7 @@ class GroceryListRepository{
         }
     }
     
-    func toggleItemAsPurchased(for productID: String, inList listID: UUID, isPurchased: Bool) async {
+    func toggleItemAsPurchased(for productID: UUID, inList listID: UUID, isPurchased: Bool) async {
         do{
             let updatedList = try await groceryListService.toggleItemStatus(for: productID, inListWithID: listID, isPurchased: isPurchased)
             groceryLists = groceryLists.map{$0.id == updatedList.id ? updatedList : $0 }

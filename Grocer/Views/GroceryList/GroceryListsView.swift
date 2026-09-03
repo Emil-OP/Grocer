@@ -165,6 +165,13 @@ struct GroceryListsView: View {
                         ForEach(masterList) { item in
                             GroceryListItemRow(product: item)
                                 .listRowInsets(EdgeInsets())
+                                .onTapGesture {
+                                    Task{
+                                        for list in item.parentLists {
+                                            await groceryRepo.toggleItemAsPurchased(for: item.item.id, inList: list.key, isPurchased: false)
+                                        }
+                                    }
+                                }
                         }.scrollIndicators(.hidden)
                             .listStyle(.plain)
                             .scrollContentBackground(.hidden)
@@ -174,6 +181,13 @@ struct GroceryListsView: View {
                                 .listRowInsets(EdgeInsets())
                                 .grayscale(1)
                                 .overlay(Color.black.opacity(0.8))
+                                .onTapGesture {
+                                    Task{
+                                        for list in item.parentLists {
+                                            await groceryRepo.toggleItemAsPurchased(for: item.item.id, inList: list.key, isPurchased: true)
+                                        }
+                                    }
+                                }
                         }.scrollIndicators(.hidden)
                             .listStyle(.plain)
                             .scrollContentBackground(.hidden)
