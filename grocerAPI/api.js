@@ -300,7 +300,6 @@ app.get('/grocery-lists', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.sub; 
 
-        // 🚨 THIS IS THE FIXED SQL QUERY 🚨
         const getListQuery = `
             SELECT 
             gl.id as gl_id,
@@ -313,7 +312,8 @@ app.get('/grocery-lists', authenticateToken, async (req, res) => {
             p.image_url,
             s.supermarket_name as supermarket, /* Fetch the string name and alias it */
             gl_i.amount::INTEGER,
-            gl_i.is_checked
+            gl_i.is_checked,
+            gl_i.id as gli_id
             FROM grocery_lists as gl
             LEFT JOIN grocery_list_items as gl_i on gl.id = gl_i.gl_id
             LEFT JOIN products as p on gl_i.p_id = p.id
@@ -326,7 +326,6 @@ app.get('/grocery-lists', authenticateToken, async (req, res) => {
         const groupedLists = {};
 
         for (const row of listQueryResult.rows) {
-            // Because we did a LEFT JOIN, we use gl_id to group them
             if (!groupedLists[row.gl_id]) {
                 groupedLists[row.gl_id] = {
                     id: row.gl_id,
@@ -336,7 +335,6 @@ app.get('/grocery-lists', authenticateToken, async (req, res) => {
                 };
             }
             
-            // Only create an item if the LEFT JOIN actually found a product
             if (row.p_id != null) {
                 const product = {
                     id: row.p_id,
@@ -350,6 +348,7 @@ app.get('/grocery-lists', authenticateToken, async (req, res) => {
                 };
 
                 const groceryListItem = {
+                    gli_id: row.gli_id,
                     item: product,
                     amount: parseInt(row.amount,10),
                     gl_id: row.gl_id
@@ -442,7 +441,8 @@ app.post('/grocery-lists/:listId/items', authenticateToken, async (req, res) => 
                 p.id as p_id, p.product_name as product_name, 
                 p.price::FLOAT, p.measurement_description, p.measurement::FLOAT, 
                 p.supermarket, p.image_url,
-                gl_i.amount::INTEGER, gl_i.is_checked
+                gl_i.amount::INTEGER, gl_i.is_checked,
+                gl_i.id as gli_id
             FROM grocery_list_items as gl_i
             INNER JOIN grocery_lists as gl on gl_i.gl_id = gl.id
             INNER JOIN products as p on gl_i.p_id = p.id
@@ -477,13 +477,13 @@ app.post('/grocery-lists/:listId/items', authenticateToken, async (req, res) => 
             };
 
             const groceryListItem = {
-                id: row.p_id, 
+                gli_id: row.gli_id, 
                 item: product, 
                 quantity: parseInt(row.amount,10)
             };
 
             if (row.is_checked) {
-                updatedList.purchasedItems.push(groceryListItem);
+                updatedList.purchased_items.push(groceryListItem);
             } else {
                 updatedList.items.push(groceryListItem);
             }
@@ -538,10 +538,13 @@ app.patch('/grocery-lists/:listId/items/:productId', authenticateToken, async (r
                 p.id as p_id, p.product_name as product_name, 
                 p.price::FLOAT, p.measurement_description, p.measurement::FLOAT, 
                 p.supermarket, p.image_url,
-                gl_i.amount::INT, gl_i.is_checked
+                s.supermarket_name,
+                gl_i.amount::INT, gl_i.is_checked,
+                gl_i.id as gli_id
             FROM grocery_list_items as gl_i
             INNER JOIN grocery_lists as gl on gl_i.gl_id = gl.id
             INNER JOIN products as p on gl_i.p_id = p.id
+            LEFT JOIN supermarkets as s on p.supermarket = s.id
             WHERE gl.id = $1 AND gl.user_id = $2
             ORDER BY product_name ASC;
         `;
@@ -563,18 +566,19 @@ app.patch('/grocery-lists/:listId/items/:productId', authenticateToken, async (r
                 price: row.price,
                 measurement_description: row.measurement_description,
                 measurement: row.measurement,
-                supermarket_name: row.supermarket,
+                supermarket_name: row.supermarket_name,
                 image_url: row.image_url || ""
             };
 
             const groceryListItem = {
-                id: row.p_id, 
+                gli_id: row.gli_id, 
                 item: product, 
-                amount: parseInt(row.amount,10)
+                amount: parseInt(row.amount,10),
+                gl_id: row.gl_id
             };
 
             if (row.is_checked) {
-                updatedList.purchasedItems.push(groceryListItem);
+                updatedList.purchased_items.push(groceryListItem);
             } else {
                 updatedList.items.push(groceryListItem);
             }
@@ -602,7 +606,8 @@ app.get('/grocery-lists/:listId', authenticateToken, async (req, res) => {
                 p.id as p_id, p.product_name as product_name, 
                 p.price::FLOAT, p.measurement_description, p.measurement::FLOAT, 
                 p.supermarket, p.image_url,
-                gl_i.amount, gl_i.is_checked
+                gl_i.amount, gl_i.is_checked,
+                gl_i.id as gli_id
             FROM grocery_lists as gl
             LEFT JOIN grocery_list_items as gl_i on gl.id = gl_i.gl_id
             LEFT JOIN products as p on gl_i.p_id = p.id
@@ -639,13 +644,13 @@ app.get('/grocery-lists/:listId', authenticateToken, async (req, res) => {
                 };
 
                 const groceryListItem = {
-                    id: row.p_id, 
+                    gli_id: row.gli_id, 
                     item: product, 
                     quantity: parseInt(row.amount,10) 
                 };
 
                 if (row.is_checked) {
-                    fetchedList.purchasedItems.push(groceryListItem);
+                    fetchedList.purchased_items.push(groceryListItem);
                 } else {
                     fetchedList.items.push(groceryListItem);
                 }

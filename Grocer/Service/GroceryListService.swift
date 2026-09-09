@@ -45,6 +45,12 @@ struct GroceryListService: GroceryListServiceProtocol {
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
+        if let jsonString = String(data: data, encoding: .utf8) {
+            print(jsonString)
+        } else {
+            print("Unable to convert Data to String.")
+        }
+        
         guard let response = response as? HTTPURLResponse else {
             throw URLError(.badServerResponse)
         }

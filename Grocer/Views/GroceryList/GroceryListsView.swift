@@ -19,7 +19,9 @@ struct GroceryListsView: View {
                 }
             }
         }
-        return tempMasterList.sorted{$0.item.supermarketName < $1.item.supermarketName}
+        return tempMasterList.sorted {
+            $0.item.supermarketName < $1.item.supermarketName
+        }
     }
     var purchasedMasterList: [GroceryListItem] {
         var tempPurchasedMasterList: [GroceryListItem] = []
@@ -31,9 +33,10 @@ struct GroceryListsView: View {
                 }
             }
         }
-        return tempPurchasedMasterList.sorted{$0.item.supermarketName < $1.item.supermarketName}
+        return tempPurchasedMasterList.sorted {
+            $0.item.supermarketName < $1.item.supermarketName
+        }
     }
-    @State var isActive: Bool = false
     @State var isForm: Bool = false
     @State var listName: String = ""
     @State var isValid = true
@@ -144,7 +147,7 @@ struct GroceryListsView: View {
                                         currentListId = list.id
                                         isEditingMode = true
                                     }
-                                    
+
                             }
                         }
                     }
@@ -166,10 +169,16 @@ struct GroceryListsView: View {
                             GroceryListItemRow(product: item)
                                 .listRowInsets(EdgeInsets())
                                 .onTapGesture {
-                                    Task{
+                                    Task {
                                         for list in item.parentLists {
-                                            await groceryRepo.toggleItemAsPurchased(for: item.item.id, inList: list.key, isPurchased: false)
+                                            await groceryRepo
+                                                .toggleItemAsPurchased(
+                                                    for: item.item.id,
+                                                    inList: list.key,
+                                                    isPurchased: false
+                                                )
                                         }
+
                                     }
                                 }
                         }.scrollIndicators(.hidden)
@@ -182,9 +191,14 @@ struct GroceryListsView: View {
                                 .grayscale(1)
                                 .overlay(Color.black.opacity(0.8))
                                 .onTapGesture {
-                                    Task{
+                                    Task {
                                         for list in item.parentLists {
-                                            await groceryRepo.toggleItemAsPurchased(for: item.item.id, inList: list.key, isPurchased: true)
+                                            await groceryRepo
+                                                .toggleItemAsPurchased(
+                                                    for: item.item.id,
+                                                    inList: list.key,
+                                                    isPurchased: true
+                                                )
                                         }
                                     }
                                 }

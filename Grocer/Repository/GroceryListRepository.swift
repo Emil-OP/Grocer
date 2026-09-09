@@ -53,11 +53,16 @@ class GroceryListRepository{
     func toggleItemAsPurchased(for productID: UUID, inList listID: UUID, isPurchased: Bool) async {
         do{
             let updatedList = try await groceryListService.toggleItemStatus(for: productID, inListWithID: listID, isPurchased: isPurchased)
-            groceryLists = groceryLists.map{$0.id == updatedList.id ? updatedList : $0 }
+            var tempList: [GroceryList] = []
+            tempList.append(contentsOf: groceryLists.map{$0.id == updatedList.id ? updatedList : $0 })
+            groceryLists = []
+            groceryLists.append(contentsOf: tempList)
+            
         }catch{
             print("Failed to toggle item: \(error.localizedDescription)")
         }
     }
+    
     
     func fetchGroceryListByID(listID: UUID) async {
         do {
