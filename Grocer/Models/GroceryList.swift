@@ -22,7 +22,7 @@ import Foundation
     }
     
     init(
-        id: UUID = UUID(),
+        id: UUID,
         name: String,
         items: [GroceryListItem],
         purchasedItems: [GroceryListItem],

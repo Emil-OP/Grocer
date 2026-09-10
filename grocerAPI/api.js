@@ -310,14 +310,14 @@ app.get('/grocery-lists', authenticateToken, async (req, res) => {
             p.measurement_description,
             p.measurement::FLOAT,
             p.image_url,
-            s.supermarket_name as supermarket, /* Fetch the string name and alias it */
+            s.supermarket_name as supermarket, 
             gl_i.amount::INTEGER,
             gl_i.is_checked,
             gl_i.id as gli_id
             FROM grocery_lists as gl
             LEFT JOIN grocery_list_items as gl_i on gl.id = gl_i.gl_id
             LEFT JOIN products as p on gl_i.p_id = p.id
-            LEFT JOIN supermarkets as s on p.supermarket = s.id /* Join the supermarkets table */
+            LEFT JOIN supermarkets as s on p.supermarket = s.id
             WHERE gl.user_id = $1 
             ORDER BY gl.name ASC;
         `;
@@ -500,14 +500,14 @@ app.post('/grocery-lists/:listId/items', authenticateToken, async (req, res) => 
 
 //Marking an item as checked
 
-app.patch('/grocery-lists/:listId/items/:productId', authenticateToken, async (req, res) => {
+app.patch('/grocery-lists/:listId/items/:glItemID', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.sub;
-        const { listId, productId } = req.params;
+        const { listId, glItemID } = req.params;
         const { isPurchased } = req.body;
 
 
-        console.log("Debug Params:", { isPurchased, listId, productId, userId });
+        console.log("Debug Params:", { isPurchased, listId, glItemID, userId });
         console.log("Raw body:", req.body);
         console.log("Value:", req.body.isPurchased);
         console.log("Type:", typeof req.body.isPurchased);
@@ -519,15 +519,15 @@ app.patch('/grocery-lists/:listId/items/:productId', authenticateToken, async (r
         const updateItemQuery = `
             UPDATE grocery_list_items
             SET is_checked = $1
-            WHERE gl_id = $2 AND p_id = $3
+            WHERE gl_id = $2 AND id = $3
             AND EXISTS (
                 SELECT 1 FROM grocery_lists 
                 WHERE id = $2 AND user_id = $4
             );
         `;
         
-        const updateResult = await pool.query(updateItemQuery, [isPurchased, listId, productId, userId]);
-
+        const updateResult = await pool.query(updateItemQuery, [isPurchased, listId, glItemID, userId]);
+        
         if (updateResult.rowCount === 0) {
             return res.status(404).json({ error: "Item not found or unauthorized." });
         }

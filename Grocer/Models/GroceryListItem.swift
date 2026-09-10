@@ -28,8 +28,8 @@ struct GroceryListItem: Decodable, Identifiable, Equatable {
         self.parentLists[try container.decode(UUID.self,forKey: .parentID)] = try container.decode(Int.self, forKey: .quantity)
     }
 
-    init(product: Product, quantity: Int = 1,parentLists: [UUID:Int]) {
-        self.id = UUID()
+    init(id: UUID = UUID(),product: Product, quantity: Int = 1,parentLists: [UUID:Int]) {
+        self.id = id
         self.item = product
         self.quantity = quantity
         self.parentLists = self.parentLists.merging(parentLists){(_, new) in new}

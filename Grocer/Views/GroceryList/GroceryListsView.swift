@@ -142,6 +142,7 @@ struct GroceryListsView: View {
                                                 for: list.id
                                             )
                                         }
+                                        print("Toggling via card view list id: \(list.id)")
                                     }
                                     .onLongPressGesture {
                                         currentListId = list.id
@@ -173,9 +174,9 @@ struct GroceryListsView: View {
                                         for list in item.parentLists {
                                             await groceryRepo
                                                 .toggleItemAsPurchased(
-                                                    for: item.item.id,
+                                                    for: item.id,
                                                     inList: list.key,
-                                                    isPurchased: false
+                                                    isPurchased: true
                                                 )
                                         }
 
@@ -195,9 +196,9 @@ struct GroceryListsView: View {
                                         for list in item.parentLists {
                                             await groceryRepo
                                                 .toggleItemAsPurchased(
-                                                    for: item.item.id,
+                                                    for: item.id,
                                                     inList: list.key,
-                                                    isPurchased: true
+                                                    isPurchased: false
                                                 )
                                         }
                                     }
