@@ -15,6 +15,7 @@ class ProductRepository {
     private(set) var hasReachedEnd = false
     private(set) var currentPage = 1
 
+
     private let productService: any ProductServiceProtocol
 
     init(productService: any ProductServiceProtocol = ProductService()) {

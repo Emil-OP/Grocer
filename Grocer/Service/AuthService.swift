@@ -33,7 +33,23 @@ class AuthService: AuthServiceProtocol {
         let payload = try JSONEncoder().encode(loginPayload)
         request.httpBody = payload
 
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+        }
+
+        guard (200...299).contains(httpResponse.statusCode) else {
+            if let errorString = String(data: data, encoding: .utf8) {
+                print("Backend Login Error: \(errorString)")
+            }
+            throw URLError(.badServerResponse)
+        }
+        
+        if let jsonString = String(data: data, encoding: .utf8) {
+            print("RAW LOGIN RESPONSE: \(jsonString)")
+        }
+        
         let loginResponse = try JSONDecoder().decode(
             LoginResponse.self,
             from: data
@@ -60,6 +76,11 @@ class AuthService: AuthServiceProtocol {
         request.httpBody = try JSONEncoder().encode(registrationPayload)
 
         let (data, _) = try await URLSession.shared.data(for: request)
+        
+        if let jsonString = String(data: data, encoding: .utf8) {
+            print("RAW SERVER RESPONSE: \(jsonString)")
+        }
+        
         let registrationResponse = try JSONDecoder().decode(
             RegistrationResponse.self,
             from: data
@@ -115,11 +136,13 @@ struct RegistrationPayload: Encodable {
 
 struct RegistrationResponse: Decodable {
     let accessToken: String
+    let refreshToken: String
     let username: String
     let name: String
 
     private enum CodingKeys: String, CodingKey {
         case accessToken = "access_token"
+        case refreshToken = "refresh_token"
         case username
         case name
     }

@@ -45,9 +45,6 @@ struct ProductView: View {
             Button {
                 print("Added \(cantidad)")
                 dismiss()
-
-                //TODO:
-                //Still need to add a grocery list for the user in order to add this item somewhere
             } label: {
                 Text("Agregar")
                     .font(.title)
@@ -67,7 +64,7 @@ struct ProductView: View {
 #Preview {
     ProductView(
         product: .init(
-            id: "1",
+            id: UUID(),
             productName: "Queso Cottage Breakstone 4% Grasa 16oz",
             price: 329.35,
             measurementDescription: "oz",

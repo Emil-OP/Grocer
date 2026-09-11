@@ -9,15 +9,8 @@ import SwiftUI
 
 struct GroceryListCardView: View {
     
-    @Binding var groceryList : GroceryList
-    private var completedPercentage : Double {
-        guard !groceryList.items.isEmpty else {return 0}
-        return (Double(groceryList.purchasedItems.count)/(Double(groceryList.items.count) + Double(groceryList.purchasedItems.count)))*100
-    }
-    
+    let groceryList : GroceryList
    
-    
-    
     var body: some View {
         VStack {
            
@@ -32,21 +25,10 @@ struct GroceryListCardView: View {
                 .font(.caption)
                 .foregroundStyle(.gray.opacity(0.8))
             }
-            ZStack{
-                Circle()
-                    .stroke(.gray.opacity(0.2),lineWidth: 10)
-                    .frame(width: 80, height:80)
-                Text("%\(completedPercentage.roundedString(precision: 0))")
-                Circle()
-                    .trim(from: 0.0, to: CGFloat(completedPercentage)/100)
-                    .stroke(.green,lineWidth: 10)
-                    .frame(width: 80, height:80)
-                    .rotationEffect(.degrees(-90))
-                    .animation(.easeInOut(duration:1.0),value:CGFloat(completedPercentage/100))
-            }
+            ProgressCircleView(completedPercentage: groceryList.completedPercentage)
         }
         .padding()
-        .frame(maxWidth: 175)
+        .frame(width: 150,height: 140)
         .glassEffect(
             .regular.interactive(),
             in: RoundedRectangle(cornerRadius: 20)
@@ -66,5 +48,5 @@ struct GroceryListCardView: View {
     
     @Previewable @State var gList = mockGroceryLists
     
-    GroceryListCardView(groceryList: $gList[0])
+    GroceryListCardView(groceryList: gList[0])
 }

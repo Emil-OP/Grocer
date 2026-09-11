@@ -17,45 +17,29 @@ enum TabItems {
 struct ContentView: View {
     @Environment(AuthManager.self) private var authManager
     @State private var productRepo = ProductRepository()
+    @State private var groceryListRepo = GroceryListRepository()
     @State private var selectedTab: TabItems = .myLists
-    
 
     var body: some View {
-        
-        VStack{
-            if !authManager.isAuthenticated{
+
+        VStack {
+            if !authManager.isAuthenticated {
                 LoginView()
+                    .onAppear {
+                        selectedTab = .myLists
+                    }
             } else {
-                TabView(selection: $selectedTab) {
-                    Tab("Home", systemImage: "house", value: .home) {
-                        Text("Under construction")
-                    }
-                    Tab("Lists",systemImage: "checklist.unchecked",value: .myLists) {
-                        GroceryListsView(groceryLists: mockGroceryLists)
-                    }
-                    Tab("Settings", systemImage: "gearshape.fill", value: .settings) {
-                        Text("Under construction")
-                    }
-                    Tab(value: .search, role: .search) {
-                        ProductsView()
-                    }
-                    
-                }
-                .environment(productRepo)
-                .tabBarMinimizeBehavior(.onScrollDown)
+                MainTabView(selectedTab: $selectedTab)
             }
         }
-        .padding()
+//        .padding()
         .ignoresSafeArea()
-        
-        
+
     }
-        
+
 }
 
 #Preview {
     ContentView()
-        .environment(AuthManager())
+        .environment(AuthManager.shared)
 }
-
-
