@@ -10,9 +10,13 @@ import Foundation
 @Observable  class GroceryList : Decodable,Identifiable, Equatable {
     let id: UUID
     var name: String
-    let items: [GroceryListItem]
-    let purchasedItems: [GroceryListItem]
+    var items: [GroceryListItem]
+    var purchasedItems: [GroceryListItem]
     var isActive: Bool = true
+    var completedPercentage: Double {
+        guard !self.items.isEmpty else {return 100}
+        return (Double(self.purchasedItems.count)/(Double(self.items.count) + Double(self.purchasedItems.count)))*100
+    }
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -44,8 +48,12 @@ import Foundation
     }
     
     static func == (lhs: GroceryList, rhs: GroceryList) -> Bool {
-            lhs.id == rhs.id
+            lhs.id == rhs.id &&
+            lhs.items == rhs.items &&
+            lhs.purchasedItems == rhs.purchasedItems
         }
+    
+    
     
     
 }

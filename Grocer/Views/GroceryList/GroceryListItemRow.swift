@@ -48,6 +48,8 @@ struct GroceryListItemRow: View {
                     .regular.interactive(),
                     in: RoundedRectangle(cornerRadius: 20)
                 )
+                
+                
             }
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)

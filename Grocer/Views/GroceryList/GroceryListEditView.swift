@@ -17,9 +17,9 @@ struct GroceryListEditView: View {
                 return list
             }
         }
+        //TODO: Remove this
         return mockGroceryLists[1]
     }
-
     var supermarketNames: Set<String> {
         Set(groceryList.items.map { $0.item.supermarketName })
     }
@@ -43,8 +43,7 @@ struct GroceryListEditView: View {
                 }
                 Spacer()
                 ProgressCircleView(
-                    numerator: groceryList.purchasedItems.count,
-                    denominator: groceryList.items.count
+                    completedPercentage: groceryList.completedPercentage
                 )
             }
             .padding([.top, .leading, .trailing])

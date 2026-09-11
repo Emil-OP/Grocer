@@ -9,15 +9,8 @@ import SwiftUI
 
 struct GroceryListCardView: View {
     
-    @State var groceryList : GroceryList
-    private var completedPercentage : Double {
-        guard !groceryList.items.isEmpty else {return 0}
-        return (Double(groceryList.purchasedItems.count)/(Double(groceryList.items.count) + Double(groceryList.purchasedItems.count)))*100
-    }
-    
+    let groceryList : GroceryList
    
-    
-    
     var body: some View {
         VStack {
            
@@ -32,7 +25,7 @@ struct GroceryListCardView: View {
                 .font(.caption)
                 .foregroundStyle(.gray.opacity(0.8))
             }
-            ProgressCircleView(numerator: groceryList.purchasedItems.count, denominator: groceryList.items.count)
+            ProgressCircleView(completedPercentage: groceryList.completedPercentage)
         }
         .padding()
         .frame(width: 150,height: 140)

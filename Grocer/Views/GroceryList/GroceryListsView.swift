@@ -42,6 +42,7 @@ struct GroceryListsView: View {
     @State var isValid = true
     @State var isEditingMode = false
     @State var currentListId: UUID = UUID()
+    @State var toggledItem: UUID = UUID()
 
     var body: some View {
         NavigationStack {
@@ -155,6 +156,8 @@ struct GroceryListsView: View {
                     .frame(maxWidth: .infinity, maxHeight: 150)
                 }
                 .scrollIndicators(.hidden)
+                
+                .scrollClipDisabled()
 
                 if groceryRepo.groceryLists.isEmpty {
                     Spacer()
@@ -166,48 +169,47 @@ struct GroceryListsView: View {
                     Spacer()
                 } else {
                     ScrollView {
-                        ForEach(masterList) { item in
-                            GroceryListItemRow(product: item)
-                                .listRowInsets(EdgeInsets())
-                                .onTapGesture {
-                                    Task {
-                                        for list in item.parentLists {
-                                            await groceryRepo
-                                                .toggleItemAsPurchased(
-                                                    for: item.id,
-                                                    inList: list.key,
-                                                    isPurchased: true
-                                                )
-                                        }
-
-                                    }
-                                }
-                        }.scrollIndicators(.hidden)
-                            .listStyle(.plain)
-                            .scrollContentBackground(.hidden)
-                            .listRowSpacing(7)
-                        ForEach(purchasedMasterList) { item in
-                            GroceryListItemRow(product: item)
-                                .listRowInsets(EdgeInsets())
-                                .grayscale(1)
-                                .overlay(Color.black.opacity(0.8))
-                                .onTapGesture {
-                                    Task {
-                                        for list in item.parentLists {
-                                            await groceryRepo
-                                                .toggleItemAsPurchased(
-                                                    for: item.id,
-                                                    inList: list.key,
-                                                    isPurchased: false
-                                                )
+                            ForEach(masterList) { item in
+                                GroceryListItemRow(product: item)
+                                    .listRowInsets(EdgeInsets())
+                                    .onTapGesture {
+                                        Task {
+                                            for list in item.parentLists {
+                                                await groceryRepo
+                                                    .toggleItemAsPurchased(
+                                                        for: item.id,
+                                                        inList: list.key,
+                                                        isPurchased: true
+                                                    )
+                                            }
+                                            
                                         }
                                     }
-                                }
-                        }.scrollIndicators(.hidden)
-                            .listStyle(.plain)
-                            .scrollContentBackground(.hidden)
-                            .listRowSpacing(7)
+                            }
+                            ForEach(purchasedMasterList) { item in
+                                GroceryListItemRow(product: item)
+                                    .listRowInsets(EdgeInsets())
+                                    .grayscale(1)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .foregroundStyle(.black.opacity(0.8))
+                                    )
+                                    .onTapGesture {
+                                        Task {
+                                            for list in item.parentLists {
+                                                await groceryRepo
+                                                    .toggleItemAsPurchased(
+                                                        for: item.id,
+                                                        inList: list.key,
+                                                        isPurchased: false
+                                                    )
+                                            }
+                                        }
+                                    }
+                            }
                     }
+                    .scrollIndicators(.hidden)
+//                    .scrollClipDisabled()
                 }
 
             }

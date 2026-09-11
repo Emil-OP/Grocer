@@ -39,7 +39,6 @@ struct GroceryListItem: Decodable, Identifiable, Equatable {
         self.parentLists[glID] = quantity
     }
     
-    // F0473819-23CF-43D5-AB22-052B439FCBEB
     //TODO: Add removal in GroceryListService.swift
     mutating func removeParent(withID glID: UUID){
         self.parentLists.removeValue(forKey: glID)

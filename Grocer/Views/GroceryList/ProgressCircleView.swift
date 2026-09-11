@@ -9,13 +9,7 @@ import SwiftUI
 
 struct ProgressCircleView: View {
     
-    let numerator: Int
-    let denominator: Int
-    
-    private var completedPercentage : Double {
-        guard numerator != 0 else {return 0}
-        return (Double(numerator)/(Double(denominator) + Double(numerator)))*100
-    }
+    var completedPercentage: Double
     
     var body: some View {
         ZStack{
@@ -34,5 +28,5 @@ struct ProgressCircleView: View {
 }
 
 #Preview {
-    ProgressCircleView(numerator: 10,denominator: 20)
+    ProgressCircleView(completedPercentage: 83.0)
 }
