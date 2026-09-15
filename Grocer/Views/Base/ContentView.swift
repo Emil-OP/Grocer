@@ -32,7 +32,6 @@ struct ContentView: View {
                 MainTabView(selectedTab: $selectedTab)
             }
         }
-//        .padding()
         .ignoresSafeArea()
 
     }
