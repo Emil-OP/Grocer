@@ -9,12 +9,12 @@ import Foundation
 
 @Observable
 class ProductRepository {
-    private(set) var products: [Product] = []
+    private(set) var products: [UUID:Product] = [:]
     private(set) var isLoading: Bool = false
     private(set) var error: Error?
     private(set) var hasReachedEnd = false
     private(set) var currentPage = 1
-
+    private(set) var sortedProducts: [Product] = []
 
     private let productService: any ProductServiceProtocol
 
@@ -38,7 +38,8 @@ class ProductRepository {
             if newProducts.isEmpty {
                 hasReachedEnd = true
             } else {
-                products.append(contentsOf: newProducts)
+                products = products.merging(newProducts){(current,new) in new}
+                self.sortedProducts = self.products.values.sorted { $0.productName < $1.productName }
                 currentPage += 1
             }
         } catch {
@@ -54,7 +55,8 @@ class ProductRepository {
         
         do {
             let newProducts = try await productService.fetchProductByName(productName: productName)
-            products.append(contentsOf: newProducts)
+            products = products.merging(newProducts){(current, new) in new}
+            self.sortedProducts = self.products.values.sorted { $0.productName < $1.productName }
         } catch {
             print("Failed to search products: \(error.localizedDescription)")
         }

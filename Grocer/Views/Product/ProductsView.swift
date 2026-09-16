@@ -13,11 +13,12 @@ struct ProductsView: View {
     @State private var searchString: String = ""
     @State private var selectedItem: Product?
     @State private var isSearchActive = true
+    
     var filteredProducts: [Product] {
         if searchString.isEmpty {
-            return productRepo.products
+            return productRepo.sortedProducts
         } else {
-            return productRepo.products.filter {
+            return productRepo.sortedProducts.filter {
                 $0.productName.lowercased().contains(searchString.lowercased())
             }
         }
@@ -28,7 +29,7 @@ struct ProductsView: View {
             List(filteredProducts) { product in
                 ProductListItem(product: product)
                     .onAppear {
-                        if product.id == productRepo.products.last?.id {
+                        if product.id == filteredProducts.last?.id {
                             Task {
                                 await productRepo.loadNextProductPage()
                             }
@@ -45,6 +46,7 @@ struct ProductsView: View {
             .searchable(text: $searchString)
             .onChange(of: searchString) { oldValue, newValue in
                 Task {
+                    //TODO: Implement debouncer for searching. A request is sent to the server on each keypress.
                     if !newValue.isEmpty {
                         await productRepo.searchForProduct(
                             productName: newValue
@@ -53,7 +55,7 @@ struct ProductsView: View {
                 }
             }
             .task {
-                if productRepo.products.isEmpty {
+                if filteredProducts.isEmpty {
                     await productRepo.loadNextProductPage()
                 }
             }

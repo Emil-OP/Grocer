@@ -8,8 +8,8 @@
 import Foundation
 
 protocol ProductServiceProtocol {
-    func fetchProducts(page : Int,limit: Int) async throws -> [Product]
-    func fetchProductByName(productName : String) async throws -> [Product]
+    func fetchProducts(page : Int,limit: Int) async throws -> [UUID:Product]
+    func fetchProductByName(productName : String) async throws -> [UUID:Product]
 }
 
 class ProductService : ProductServiceProtocol {
@@ -18,7 +18,7 @@ class ProductService : ProductServiceProtocol {
     
     let baseURL = Bundle.main.object(forInfoDictionaryKey: "BASE_URL") as? String
     
-    func fetchProducts(page : Int,limit : Int = 20) async throws -> [Product]{
+    func fetchProducts(page : Int,limit : Int = 20) async throws -> [UUID:Product]{
         
         guard let baseURL else {
             throw URLError(.badURL)
@@ -36,10 +36,13 @@ class ProductService : ProductServiceProtocol {
         guard let response = response as? HTTPURLResponse, response.statusCode == 200
         else { throw URLError(.badServerResponse)}
         
-        return try JSONDecoder().decode([Product].self, from: data)
+        let decodedProducts = try JSONDecoder().decode([Product].self, from: data)
+        
+        return decodedProducts.reduce(into:[UUID:Product]()){dict, product in
+            dict[product.id] = product}
     }
     
-    func fetchProductByName(productName : String) async throws -> [Product] {
+    func fetchProductByName(productName : String) async throws -> [UUID:Product] {
         guard let baseURL else {
             throw URLError(.badURL)
         }
@@ -56,6 +59,10 @@ class ProductService : ProductServiceProtocol {
         guard let response = response as? HTTPURLResponse, response.statusCode == 200
         else { throw URLError(.badServerResponse)}
         
-        return try JSONDecoder().decode([Product].self, from: data)
+        let decodedProducts = try JSONDecoder().decode([Product].self, from: data)
+        
+        return decodedProducts.reduce(into: [UUID:Product]()) { dict, product in
+            dict[product.id] = product
+        }
     }
 }
