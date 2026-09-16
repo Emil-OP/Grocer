@@ -5,6 +5,8 @@
 //  Created by Emil on 7/24/26.
 //
 
+//TODO: create/insert/toggle should be modified to return a response code/id. Sending the whole list is inefficient.
+
 import Foundation
 
 protocol GroceryListServiceProtocol {

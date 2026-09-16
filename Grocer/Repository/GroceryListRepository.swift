@@ -8,79 +8,111 @@
 import Foundation
 
 @Observable
-class GroceryListRepository{
+class GroceryListRepository {
+
     
-    private(set) var groceryLists: [GroceryList] = []
+    private(set) var groceryLists: [UUID: GroceryList] = [:]
     private(set) var isLoading: Bool = false
     private let groceryListService: any GroceryListServiceProtocol
-    
-    init(groceryListService: any GroceryListServiceProtocol = GroceryListService()) {
+    var groceryListsArray: [GroceryList] {
+        Array(groceryLists.values)
+    }
+
+    init(
+        groceryListService: any GroceryListServiceProtocol =
+            GroceryListService()
+    ) {
         self.groceryListService = groceryListService
     }
-    
+
     func loadGroceryLists() async {
-        guard !isLoading else {return}
+        guard !isLoading else { return }
         isLoading = true
-        defer { isLoading = false}
-        
+        defer { isLoading = false }
+
         do {
             print("Loading grocery list onto local repo.")
             groceryLists = try await groceryListService.fetchGroceryLists()
+                .reduce(into: [UUID: GroceryList]()) { dict, list in
+                    dict[list.id] = list
+                }
             print("Loaded grocery list onto local repo successffully")
         } catch {
-            print("Failed to load grocery lists onto local repository: \(error.localizedDescription)")
+            print(
+                "Failed to load grocery lists onto local repository: \(error.localizedDescription)"
+            )
         }
     }
-    
+
     func createGroceryList(groceryListName: String) async {
         do {
-            let newList = try await groceryListService.createGroceryList(groceryListName: groceryListName)
-            groceryLists.insert(newList, at: 0)
+            let newList = try await groceryListService.createGroceryList(
+                groceryListName: groceryListName
+            )
+            groceryLists[newList.id] = newList
         } catch {
-            print("Failed to add new grocery list onto local repository: \(error.localizedDescription)")
+            print(
+                "Failed to add new grocery list onto local repository: \(error.localizedDescription)"
+            )
         }
     }
-    
-    func addItemToGroceryList(item: GroceryListItem, into listWithID: UUID) async {
+
+    func addItemToGroceryList(item: GroceryListItem, into listWithID: UUID)
+        async
+    {
         do {
-            let updatedList = try await groceryListService.insertGroceryListItem(item: item, into: listWithID)
-            groceryLists = groceryLists.map{$0.id == updatedList.id ? updatedList : $0 }
+            let updatedList =
+                try await groceryListService.insertGroceryListItem(
+                    item: item,
+                    into: listWithID
+                )
+            groceryLists[updatedList.id] = updatedList
         } catch {
-            print("Failed to insert item into grocery list: \(error.localizedDescription)")
+            print(
+                "Failed to insert item into grocery list: \(error.localizedDescription)"
+            )
         }
     }
-    
-    func toggleItemAsPurchased(for glItemID: UUID, inList listID: UUID, isPurchased: Bool) async {
-        do{
-            let updatedList = try await groceryListService.toggleItemStatus(for: glItemID, inListWithID: listID, isPurchased: isPurchased)
-            var tempList: [GroceryList] = []
-            tempList.append(contentsOf: groceryLists.map{$0.id == updatedList.id ? updatedList : $0 })
-            groceryLists = []
-            groceryLists.append(contentsOf: tempList)
-            
-        }catch{
+
+    func toggleItemAsPurchased(
+        for glItemID: UUID,
+        inList listID: UUID,
+        isPurchased: Bool
+    ) async {
+        do {
+            let updatedList = try await groceryListService.toggleItemStatus(
+                for: glItemID,
+                inListWithID: listID,
+                isPurchased: isPurchased
+            )
+            groceryLists[updatedList.id] = updatedList
+
+        } catch {
             print("Failed to toggle item: \(error.localizedDescription)")
         }
     }
-    
-    
-    func fetchGroceryListByID(listID: UUID) async {
-        do {
-            let fetchedList = try await groceryListService.fetchGroceryList(byID: listID)
-            if let index = groceryLists.firstIndex(where: { $0.id == listID }) {
-                groceryLists[index] = fetchedList
-            } else {
-                groceryLists.append(fetchedList)
-            }
-        } catch {
-            print("Failed to fetch specific grocery list: \(error.localizedDescription)")
-        }
-    }
-    
+
+//    func fetchGroceryListByID(listID: UUID) async {
+//        do {
+//            let fetchedList = try await groceryListService.fetchGroceryList(
+//                byID: listID
+//            )
+//            if let index = groceryLists.firstIndex(where: { $0.id == listID }) {
+//                groceryLists[index] = fetchedList
+//            } else {
+//                groceryLists.append(fetchedList)
+//            }
+//        } catch {
+//            print(
+//                "Failed to fetch specific grocery list: \(error.localizedDescription)"
+//            )
+//        }
+//    }
+
     func toggleListActiveState(for listId: UUID) {
-        if let index = groceryLists.firstIndex(where: { $0.id == listId }) {
-            groceryLists[index].isActive.toggle()
+        if groceryLists[listId] != nil {
+            groceryLists[listId]?.isActive.toggle()
         }
     }
-    
+
 }

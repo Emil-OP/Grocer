@@ -39,7 +39,7 @@ class ProductRepository {
                 hasReachedEnd = true
             } else {
 
-                var tempDictionary = newProducts.reduce(into: [UUID: Product]())
+                let tempDictionary = newProducts.reduce(into: [UUID: Product]())
                 {
                     dict,
                     product in
@@ -71,7 +71,7 @@ class ProductRepository {
                 productName: productName
             )
 
-            var tempDictionary = newProducts.reduce(into: [UUID: Product]()) {
+            let tempDictionary = newProducts.reduce(into: [UUID: Product]()) {
                 dict,
                 product in
                 dict[product.id] = product
