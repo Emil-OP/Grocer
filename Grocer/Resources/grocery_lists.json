@@ -1,0 +1,729 @@
+[
+    {
+        "id": "34853010-f3ab-4c74-95eb-a4b7b54dc480",
+        "name": "1",
+        "items": [
+            {
+                "gli_id": "b4773daa-106b-449f-b7ca-b8d1a53625e6",
+                "item": {
+                    "id": "f12c06e6-4776-4e6f-9fc9-f94af4cc12df",
+                    "product_name": "Salchicha Italiana Vegana Impossible 13.5 Onz",
+                    "amount": 12,
+                    "price": 969.95,
+                    "measurement": 1,
+                    "measurement_description": "unit",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/2/2214700-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 12,
+                "gl_id": "34853010-f3ab-4c74-95eb-a4b7b54dc480"
+            },
+            {
+                "gli_id": "c2d6299d-ac12-4dee-b339-7b83a98a2e6d",
+                "item": {
+                    "id": "0b235e20-a4a5-46d0-862a-6e4fa9489fe0",
+                    "product_name": "Escalopines de Pollo Al Pesto, Lb (Peso Aprox. 1 Libra)",
+                    "amount": 6,
+                    "price": 264.95,
+                    "measurement": 1,
+                    "measurement_description": "libra",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/2/2221170-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 6,
+                "gl_id": "34853010-f3ab-4c74-95eb-a4b7b54dc480"
+            },
+            {
+                "gli_id": "ac4f2ada-112c-4197-91ff-dba93d88f5bc",
+                "item": {
+                    "id": "f0473819-23cf-43d5-ab22-052b439fcbeb",
+                    "product_name": "Clementinas Importada, Lb (Aprox. 3-5 Unidades Por Libra)",
+                    "amount": 17,
+                    "price": 109,
+                    "measurement": 1,
+                    "measurement_description": "lb",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/0/2026280-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 17,
+                "gl_id": "34853010-f3ab-4c74-95eb-a4b7b54dc480"
+            }
+        ],
+        "purchased_items": [
+            {
+                "gli_id": "fb09080a-0c6a-46ff-ae6b-f51dcdc5814c",
+                "item": {
+                    "id": "17142111-7446-4192-9f6e-9ad7ab79f55d",
+                    "product_name": "Manzana Koru Paq. 2 Lb",
+                    "amount": 14,
+                    "price": 289.95,
+                    "measurement": 2,
+                    "measurement_description": "lb",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/2/2231683-1.png?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300&format=jpeg"
+                },
+                "amount": 14,
+                "gl_id": "34853010-f3ab-4c74-95eb-a4b7b54dc480"
+            },
+            {
+                "gli_id": "da9b943e-007b-4276-8c71-3906815533f8",
+                "item": {
+                    "id": "fd237ae9-547b-4c2c-8754-f6fd0fdb2798",
+                    "product_name": "Detergente En Polvo Wala 1800 G",
+                    "amount": 2,
+                    "price": 285,
+                    "measurement": 1800,
+                    "measurement_description": "g",
+                    "supermarket_name": "La Sirena",
+                    "image_url": "https://gruporamos.vtexassets.com/arquivos/ids/161220-500-auto?v=639094585579730000&width=500&height=auto&aspect=true"
+                },
+                "amount": 2,
+                "gl_id": "34853010-f3ab-4c74-95eb-a4b7b54dc480"
+            },
+            {
+                "gli_id": "4380fa58-6ca7-47c5-ba4d-8d9fb695d9ee",
+                "item": {
+                    "id": "bd9d6d70-3d61-4bc7-8722-bde982ce89ba",
+                    "product_name": "Carne Molida A Base De Plantas Beyond Meat 16 Onz",
+                    "amount": 13,
+                    "price": 709.95,
+                    "measurement": 1,
+                    "measurement_description": "unit",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/1/2198998-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 13,
+                "gl_id": "34853010-f3ab-4c74-95eb-a4b7b54dc480"
+            },
+            {
+                "gli_id": "87029e3f-b1fb-4659-abb4-41645467763d",
+                "item": {
+                    "id": "cf0c7b3b-54e1-4d2b-89cf-91e14addcdf9",
+                    "product_name": "California De Cerdo Empacada, Lb (Peso Aprox. 1.5 Libra)",
+                    "amount": 13,
+                    "price": 149.95,
+                    "measurement": 1.5,
+                    "measurement_description": "libra",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/1/2179691-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 13,
+                "gl_id": "34853010-f3ab-4c74-95eb-a4b7b54dc480"
+            },
+            {
+                "gli_id": "5b934e9e-5742-49f9-be20-5b1f0df96f25",
+                "item": {
+                    "id": "367bbb07-f1e7-4de3-814c-1cf1a99b1e6c",
+                    "product_name": "Bola De Res Brangus, Lb (Peso Aprox. 1 Libra)",
+                    "amount": 7,
+                    "price": 399.95,
+                    "measurement": 1,
+                    "measurement_description": "libra",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/1/2188040-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 7,
+                "gl_id": "34853010-f3ab-4c74-95eb-a4b7b54dc480"
+            },
+            {
+                "gli_id": "df79b07e-318d-4405-8de7-53d8d8814fe5",
+                "item": {
+                    "id": "62c8e00a-963d-46d9-be63-5c62b123f99b",
+                    "product_name": "Filete De Res, Lb (Peso Aprox. 4 Libra)",
+                    "amount": 10,
+                    "price": 559,
+                    "measurement": 4,
+                    "measurement_description": "libra",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/F/I/FILETE_DE_RES_SELECTA_LB.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 10,
+                "gl_id": "34853010-f3ab-4c74-95eb-a4b7b54dc480"
+            },
+            {
+                "gli_id": "4d14cfeb-a72a-4102-8d7d-70c07a35c785",
+                "item": {
+                    "id": "896a7321-e109-4066-874b-fa41f809f315",
+                    "product_name": "Naranja Agria, Und",
+                    "amount": 11,
+                    "price": 19.95,
+                    "measurement": 1,
+                    "measurement_description": "unit",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/N/A/NARANJA_AGRIA_GRANEL.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 11,
+                "gl_id": "34853010-f3ab-4c74-95eb-a4b7b54dc480"
+            },
+            {
+                "gli_id": "afe31984-96ca-466e-86a4-e7b29aa34422",
+                "item": {
+                    "id": "5df5907f-4734-407b-b17a-b3a9afead307",
+                    "product_name": "Manzana Verde Orgánica Paq. 2 Lb (Aprox. 6-8 Unidades)",
+                    "amount": 11,
+                    "price": 329,
+                    "measurement": 2,
+                    "measurement_description": "lb",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/1/2159381-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 11,
+                "gl_id": "34853010-f3ab-4c74-95eb-a4b7b54dc480"
+            },
+            {
+                "gli_id": "e3fb0cdd-b6fb-4262-ac91-1e78cc367367",
+                "item": {
+                    "id": "33d66cc9-80d2-43d8-bf51-881ebb45d7f6",
+                    "product_name": "Detergente Liquido Ropa Bebe Wala 3L",
+                    "amount": 10,
+                    "price": 220,
+                    "measurement": 3,
+                    "measurement_description": "l",
+                    "supermarket_name": "La Sirena",
+                    "image_url": "https://gruporamos.vtexassets.com/arquivos/ids/165007-500-auto?v=639105023220600000&width=500&height=auto&aspect=true"
+                },
+                "amount": 10,
+                "gl_id": "34853010-f3ab-4c74-95eb-a4b7b54dc480"
+            },
+            {
+                "gli_id": "6d3fcf43-df8e-45ee-90c8-199571fff9d9",
+                "item": {
+                    "id": "f3b3c71c-31a8-47c3-8767-41fdb890970d",
+                    "product_name": "Naranja Agria, Und",
+                    "amount": 5,
+                    "price": 19.95,
+                    "measurement": 1,
+                    "measurement_description": "unit",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/N/A/NARANJA_AGRIA_GRANEL.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 5,
+                "gl_id": "34853010-f3ab-4c74-95eb-a4b7b54dc480"
+            }
+        ]
+    },
+    {
+        "id": "2463c749-6599-44f3-9263-0df5cc17d488",
+        "name": "2",
+        "items": [],
+        "purchased_items": [
+            {
+                "gli_id": "1245e527-447d-449b-b13e-90326182a2bd",
+                "item": {
+                    "id": "f4769aab-8972-4574-85aa-835c1c6973d1",
+                    "product_name": "Sandia Roja Con Semillas, Lb (Peso Aprox. 7.5 Libras)",
+                    "amount": 19,
+                    "price": 24.95,
+                    "measurement": 7.5,
+                    "measurement_description": "libras",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/8/2800218-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 19,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "c57c2549-16b2-45a3-a5fc-667686333d47",
+                "item": {
+                    "id": "8f894fa4-50cb-435d-9b01-195c5c348a51",
+                    "product_name": "Cola De Camarón Crudo 21/25 Congelada, Lb (Peso Aprox. 2 Libras)",
+                    "amount": 2,
+                    "price": 349.95,
+                    "measurement": 2,
+                    "measurement_description": "libras",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/0/2021098-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 2,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "9245d123-e3db-4d45-bd51-bd8a8b01ad46",
+                "item": {
+                    "id": "f7786c8f-c5d6-43aa-bdb1-373b371081b5",
+                    "product_name": "Cola de Camarón Crudo 21/25 Líder 1 lb",
+                    "amount": 16,
+                    "price": 298.95,
+                    "measurement": 25,
+                    "measurement_description": "l",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/8/5/85662a53dd69f16b2095fe7754028b731c75d41ff99103b97c4c9fe7050ae1e1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 16,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "3db04810-7a49-4cd3-81a6-26259951d470",
+                "item": {
+                    "id": "5e7d6da4-2ae9-4dcd-b8d2-726baa884ecf",
+                    "product_name": "Cola de Camarón Precocido Lider Calibre 8/12 1 LB",
+                    "amount": 13,
+                    "price": 499.95,
+                    "measurement": 1,
+                    "measurement_description": "lb",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/e/8/e848c3c4b73aedc833768429cc86322a16ac6811e1630e8bb77f0650c99bea9e.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 13,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "0498d430-1d9e-4d93-bcfa-c3dbc2fbc6a1",
+                "item": {
+                    "id": "2bee4c8a-1945-47b2-8cd1-97ea81d67426",
+                    "product_name": "Filete De Dorado Congelado, Lb (Peso Aprox. 1 Libra)",
+                    "amount": 15,
+                    "price": 449.95,
+                    "measurement": 1,
+                    "measurement_description": "libra",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/8/2800692-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 15,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "22e30e86-bfad-43b6-a671-3cac23294c68",
+                "item": {
+                    "id": "2bee4c8a-1945-47b2-8cd1-97ea81d67426",
+                    "product_name": "Filete De Dorado Congelado, Lb (Peso Aprox. 1 Libra)",
+                    "amount": 7,
+                    "price": 449.95,
+                    "measurement": 1,
+                    "measurement_description": "libra",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/8/2800692-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 7,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "a15522d0-3276-4d7f-a11d-bd53f8b56737",
+                "item": {
+                    "id": "2bee4c8a-1945-47b2-8cd1-97ea81d67426",
+                    "product_name": "Filete De Dorado Congelado, Lb (Peso Aprox. 1 Libra)",
+                    "amount": 3,
+                    "price": 449.95,
+                    "measurement": 1,
+                    "measurement_description": "libra",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/8/2800692-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 3,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "bf37d1a4-07bd-4d3c-976b-ee33a4b2d871",
+                "item": {
+                    "id": "3eea296e-7f6e-4920-a69f-838ae6c39965",
+                    "product_name": "Gallina Congelada Don Pollo, Lb (Peso Aprox. 11 Lbs)",
+                    "amount": 11,
+                    "price": 99.95,
+                    "measurement": 11,
+                    "measurement_description": "lbs",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/1/2136527-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 11,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "0eea29e1-c289-4e6c-a57e-b3e9361c615d",
+                "item": {
+                    "id": "382cd853-004d-42d9-abc9-073c7ef39742",
+                    "product_name": "Hamburguesa Clasica Brangus 4 Und/Paq",
+                    "amount": 19,
+                    "price": 549.95,
+                    "measurement": 1,
+                    "measurement_description": "unit",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/B/R/BRANGUS_HAMBURGUESA_CLASICA_4UND_CONG.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 19,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "e4217a54-2aac-4a9b-a87a-37f67f8d550d",
+                "item": {
+                    "id": "05abf880-aabb-4ea1-80ea-0eb22a7e25ca",
+                    "product_name": "Hamburguesa Clasica Brangus 4 Und/Paq",
+                    "amount": 13,
+                    "price": 549.95,
+                    "measurement": 1,
+                    "measurement_description": "unit",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/B/R/BRANGUS_HAMBURGUESA_CLASICA_4UND_CONG.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 13,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "488bcc5b-3c8a-4091-875d-38c36ccd4c6a",
+                "item": {
+                    "id": "affa460f-e821-4737-b748-8216504e8c1f",
+                    "product_name": "Harina De Trigo Líder 1 Kg",
+                    "amount": 7,
+                    "price": 59.95,
+                    "measurement": 1,
+                    "measurement_description": "kg",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/2/2229169-1.png?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300&format=jpeg"
+                },
+                "amount": 7,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "f1ca5162-bd01-482c-ae2d-eec9af698ba8",
+                "item": {
+                    "id": "6dbcc231-3318-4364-8489-275becf0db71",
+                    "product_name": "Lomo De Cerdo Fresco Empacado, Lb (Peso Aprox. 2 Libra)",
+                    "amount": 16,
+                    "price": 169.95,
+                    "measurement": 2,
+                    "measurement_description": "libra",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/2/2235250-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 16,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "4d9e1778-e95e-4be3-8f68-e2a2b6ad23c9",
+                "item": {
+                    "id": "a28aec25-840b-4763-b92d-399d8c408dbf",
+                    "product_name": "Lomo de Pavo Para Hornear Butterball Rostizado 24oz",
+                    "amount": 7,
+                    "price": 899.95,
+                    "measurement": 24,
+                    "measurement_description": "oz",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/6/4/64485c5c5bcc30eeef83f336b6b7fb9f7192105b2f34ee5970744a8f0567cfe1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 7,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "bac3fa78-30cf-4dca-a6de-3d8a40797f67",
+                "item": {
+                    "id": "7ef077ea-6fe8-41b4-99ad-9e0ea23b2aae",
+                    "product_name": "Manzana Gala/ Cameo, Lb (Aprox. 2-3 unidades Por Libra)",
+                    "amount": 2,
+                    "price": 87.95,
+                    "measurement": 1,
+                    "measurement_description": "lb",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/M/A/MANZANA_GALA_LB_64_88.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 2,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "0528017b-8810-4098-ad30-037cca4a8b86",
+                "item": {
+                    "id": "6d9e0c92-0bdf-4ddf-a8a1-2505a7577f6d",
+                    "product_name": "Manzana Red Delicious, Lb (Aprox. 3-5 unidades Por Libra)",
+                    "amount": 16,
+                    "price": 78,
+                    "measurement": 1,
+                    "measurement_description": "lb",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/8/2800197-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 16,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "c591940a-dc26-4967-87b8-480f7d7f1771",
+                "item": {
+                    "id": "58e02658-f5dc-4503-b198-c713e7c7d16f",
+                    "product_name": "Robalo Congelado, Lb (Peso Aprox. 1 Libra)",
+                    "amount": 10,
+                    "price": 144.95,
+                    "measurement": 1,
+                    "measurement_description": "libra",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/R/O/ROBALO_IMPORTADO_LB.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 10,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "791f859c-ec38-484a-b52d-4577e0ac0685",
+                "item": {
+                    "id": "eb22681a-095d-4c5b-984d-dd608de5a011",
+                    "product_name": "Salchicha Parrillera El Criollo 450 Gr",
+                    "amount": 12,
+                    "price": 229.95,
+                    "measurement": 450,
+                    "measurement_description": "g",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/2/2210062-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 12,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            },
+            {
+                "gli_id": "e2caad9f-4e4b-4ddb-b098-581daed15110",
+                "item": {
+                    "id": "31a2f5d6-58ee-4d3c-bb61-d94c1bb09a69",
+                    "product_name": "Churrasco Certified Angus Beef, Lb (Peso Aprox. 3 Libra)",
+                    "amount": 17,
+                    "price": 1199,
+                    "measurement": 3,
+                    "measurement_description": "libra",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/0/2089965_-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 17,
+                "gl_id": "2463c749-6599-44f3-9263-0df5cc17d488"
+            }
+        ]
+    },
+    {
+        "id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b",
+        "name": "3",
+        "items": [],
+        "purchased_items": [
+            {
+                "gli_id": "767b6b89-1c15-41bd-9162-6f006c0e87c7",
+                "item": {
+                    "id": "4df1c5d0-86fd-4259-99e6-fa14a3960812",
+                    "product_name": "Camarón Precocido 71/90 Congelado Cape Covelle 1 Lb",
+                    "amount": 10,
+                    "price": 589.95,
+                    "measurement": 1,
+                    "measurement_description": "lb",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/C/C/CCOVELLE_CAMARON_PCDO_71_90_1LB.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 10,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            },
+            {
+                "gli_id": "b0b67be3-3981-4ed7-9d73-0fe2c633d376",
+                "item": {
+                    "id": "ecd64633-92cd-4b32-99b7-db9fa71129af",
+                    "product_name": "Chick/Porc Bun Length Franks Bar-S 1 Lb",
+                    "amount": 2,
+                    "price": 149.95,
+                    "measurement": 1,
+                    "measurement_description": "lb",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/1/2128815-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 2,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            },
+            {
+                "gli_id": "4c9dfb7b-e14f-48ba-8c06-d8ad355a93d6",
+                "item": {
+                    "id": "2ff9e92e-47c8-45fa-b1b5-a80f497901df",
+                    "product_name": "Hot & Spicy Sausage Pattie Morning Star Farms 8 Onz",
+                    "amount": 18,
+                    "price": 539.95,
+                    "measurement": 1,
+                    "measurement_description": "unit",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/1/2116194-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 18,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            },
+            {
+                "gli_id": "fcf5cb24-da0f-423d-a33c-aa8baabfea93",
+                "item": {
+                    "id": "5880847d-e8c8-4283-9b8d-53a715e9cdfa",
+                    "product_name": "Pavo Congelado Butterball 20-24 Lbs (Peso Aprox. 24 Lbs)",
+                    "amount": 4,
+                    "price": 184.95,
+                    "measurement": 24,
+                    "measurement_description": "lbs",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/8/2800475-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 4,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            },
+            {
+                "gli_id": "1a631196-5a5f-4987-9dcd-4d6ff65a730e",
+                "item": {
+                    "id": "d6978a3e-de90-4aa4-9224-9af274f0d38d",
+                    "product_name": "Pierna de Cordero con Hueso Pasture Fresh, Lb (Peso Aprox 10 Lb)",
+                    "amount": 11,
+                    "price": 849.95,
+                    "measurement": 10,
+                    "measurement_description": "lb",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/8/2800312-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 11,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            },
+            {
+                "gli_id": "c93d136c-adf5-408d-9f70-15074d9c6cc2",
+                "item": {
+                    "id": "9d321344-8b27-4203-a3bc-e331286c9499",
+                    "product_name": "Peras Asiaticas, Lb (Aprox. 2-3 unidades Por Libra)",
+                    "amount": 19,
+                    "price": 399,
+                    "measurement": 1,
+                    "measurement_description": "lb",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/8/2800242-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 19,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            },
+            {
+                "gli_id": "4f755b88-6731-4f83-ae3e-8e2dabeda7f9",
+                "item": {
+                    "id": "1bdccf2b-1982-4d50-a353-cf32d11c93c3",
+                    "product_name": "Pulled Pork Cuatropatas 16 Onz.",
+                    "amount": 7,
+                    "price": 469.95,
+                    "measurement": 1,
+                    "measurement_description": "unit",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/C/U/CUATROPATAS_PULLED_PORK_16_OZ.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 7,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            },
+            {
+                "gli_id": "57653ae7-641d-4345-b6e9-d091017482cf",
+                "item": {
+                    "id": "72d569d0-22f7-497a-b248-d3e86ed3a9e2",
+                    "product_name": "Pulpo Baby Lb (Peso Aprox. 2.5 Libra)",
+                    "amount": 15,
+                    "price": 389.95,
+                    "measurement": 2.5,
+                    "measurement_description": "libra",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/0/2093274-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 15,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            },
+            {
+                "gli_id": "fc2e5953-9cd2-4e0c-bb7b-e609119234d9",
+                "item": {
+                    "id": "58e02658-f5dc-4503-b198-c713e7c7d16f",
+                    "product_name": "Robalo Congelado, Lb (Peso Aprox. 1 Libra)",
+                    "amount": 2,
+                    "price": 144.95,
+                    "measurement": 1,
+                    "measurement_description": "libra",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/R/O/ROBALO_IMPORTADO_LB.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 2,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            },
+            {
+                "gli_id": "2767183d-ad5a-495d-9ce1-f1c0d037415c",
+                "item": {
+                    "id": "f631a65e-01e8-4a3e-ba57-2b9988ce1ca2",
+                    "product_name": "Filete Dorada, Lb (Peso Aprox. 1 Libra)",
+                    "amount": 13,
+                    "price": 869.95,
+                    "measurement": 1,
+                    "measurement_description": "libra",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/2/2229314-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 13,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            },
+            {
+                "gli_id": "f4a42c83-e32e-4df0-a870-0293e8d1f83b",
+                "item": {
+                    "id": "6f5e9710-ab3e-495c-9e22-b7430fb4a206",
+                    "product_name": "Masa De Muelas De Cangrejo Congelada 16 Onz",
+                    "amount": 19,
+                    "price": 899.95,
+                    "measurement": 1,
+                    "measurement_description": "unit",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/0/2093747-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 19,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            },
+            {
+                "gli_id": "b3f9222a-bc4d-4893-b4a0-f639a0553b06",
+                "item": {
+                    "id": "ad39490b-b6c1-4d6d-a06c-102f8c060885",
+                    "product_name": "Carne Para Guisar De Res Brangus, Lb (Peso Aprox. 1 Libra)",
+                    "amount": 10,
+                    "price": 329.95,
+                    "measurement": 1,
+                    "measurement_description": "libra",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/0/2086817-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 10,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            },
+            {
+                "gli_id": "55d95006-c52e-4e52-834e-b3c83eba96c3",
+                "item": {
+                    "id": "eb98b881-6418-4764-a68a-02943a904f7c",
+                    "product_name": "California De Cerdo, Lb",
+                    "amount": 7,
+                    "price": 149.95,
+                    "measurement": 1,
+                    "measurement_description": "lb",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/1/2179672-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 7,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            },
+            {
+                "gli_id": "94912ef6-da6b-46e8-824c-984e29134a93",
+                "item": {
+                    "id": "d0a0f8b5-5404-4519-974f-1fc4ef9e19c4",
+                    "product_name": "Filete de Arenque Lider Ahumado 8 oz",
+                    "amount": 14,
+                    "price": 228.95,
+                    "measurement": 8,
+                    "measurement_description": "oz",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/L/I/LIDER_FILETE_DE_ARENQUE_AHUMADO_8_OZ.png?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300&format=jpeg"
+                },
+                "amount": 14,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            },
+            {
+                "gli_id": "a5e7be20-e355-46df-ba0d-865f5188dcde",
+                "item": {
+                    "id": "76f8e859-7c79-45fe-8adf-bf4ba8126bcb",
+                    "product_name": "Carne Molida De Res Baja En Grasa 96/4 Paq",
+                    "amount": 3,
+                    "price": 256.95,
+                    "measurement": 1,
+                    "measurement_description": "unit",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/C/A/CARNE_MOLIDA_DE_RES_BAJA_EN_GRASA_96_4.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 3,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            },
+            {
+                "gli_id": "dba0b0c8-7e08-44fb-ad38-96258d162586",
+                "item": {
+                    "id": "c3647d75-ebe9-41dd-8fb4-397467ec17fd",
+                    "product_name": "Manzana Verde Granny Smith, Lb (Aprox. 3-5 unidades Por Libra)",
+                    "amount": 4,
+                    "price": 89.95,
+                    "measurement": 1,
+                    "measurement_description": "lb",
+                    "supermarket_name": "El Nacional",
+                    "image_url": "https://supermercadosnacional.com/media/catalog/product/2/8/2800198-1.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=300&width=240&canvas=240:300"
+                },
+                "amount": 4,
+                "gl_id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b"
+            }
+        ]
+    }
+]
