@@ -21,19 +21,16 @@ struct ContentView: View {
     @State private var selectedTab: TabItems = .myLists
 
     var body: some View {
-
-        VStack {
             if !authManager.isAuthenticated {
                 LoginView()
                     .onAppear {
                         selectedTab = .myLists
                     }
+                    .ignoresSafeArea()
             } else {
                 MainTabView(selectedTab: $selectedTab)
+                    .ignoresSafeArea()
             }
-        }
-        .ignoresSafeArea()
-
     }
 
 }

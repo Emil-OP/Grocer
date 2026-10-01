@@ -10,7 +10,12 @@ import Foundation
 @Observable
 final class AuthManager {
     
+    
+    //TODO: Fix this
+    
     static let shared = AuthManager()
+    
+    
     var accessToken: String = ""
 //    {
 //        didSet {

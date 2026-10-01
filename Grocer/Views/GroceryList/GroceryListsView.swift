@@ -12,7 +12,7 @@ struct GroceryListsView: View {
 
     var masterList: [GroceryListItem] {
         var tempMasterList: [GroceryListItem] = []
-        for groceryList in groceryRepo.groceryLists {
+        for groceryList in groceryRepo.groceryListsArray {
             if groceryList.isActive {
                 for item in groceryList.items {
                     tempMasterList.append(item)
@@ -23,10 +23,12 @@ struct GroceryListsView: View {
             $0.item.supermarketName < $1.item.supermarketName
         }
     }
+    
+    
     var purchasedMasterList: [GroceryListItem] {
         var tempPurchasedMasterList: [GroceryListItem] = []
 
-        for groceryList in groceryRepo.groceryLists {
+        for groceryList in groceryRepo.groceryListsArray {
             if groceryList.isActive {
                 for item in groceryList.purchasedItems {
                     tempPurchasedMasterList.append(item)
@@ -98,18 +100,15 @@ struct GroceryListsView: View {
                                 Button {
                                     Task {
                                         if !listName.isEmpty {
-                                            await groceryRepo.createGroceryList(
-                                                groceryListName: listName
-                                            )
+                                            guard let newListId = await groceryRepo.createGroceryList(groceryListName: listName) else {
+                                                withAnimation {
+                                                    isValid.toggle()
+                                                }
+                                                return
+                                            }
                                             listName = ""
                                             isValid = true
-                                            if groceryRepo.groceryLists.first
-                                                != nil
-                                            {
-                                                currentListId =
-                                                    groceryRepo.groceryLists[0]
-                                                    .id
-                                            }
+                                            currentListId = newListId
                                             isEditingMode = true
                                             isForm.toggle()
                                         } else {
@@ -135,7 +134,7 @@ struct GroceryListsView: View {
                                 "Aún no has creado una lista de compras!\nPulsa aqui para empezar!"
                             )
                         } else {
-                            ForEach(groceryRepo.groceryLists) { list in
+                            ForEach(groceryRepo.groceryListsArray) { list in
                                 GroceryListCardView(groceryList: list)
                                     .onTapGesture {
                                         withAnimation {
