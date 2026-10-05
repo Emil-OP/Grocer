@@ -16,10 +16,7 @@ class GroceryListRepository {
         Array(groceryLists.values)
     }
 
-    init(
-        groceryListService: any GroceryListServiceProtocol =
-            GroceryListService()
-    ) {
+    init(groceryListService: any GroceryListServiceProtocol = GroceryListService()) {
         self.groceryListService = groceryListService
     }
 
@@ -29,12 +26,10 @@ class GroceryListRepository {
         defer { isLoading = false }
 
         do {
-            print("Loading grocery list onto local repo.")
             groceryLists = try await groceryListService.fetchGroceryLists()
                 .reduce(into: [UUID: GroceryList]()) { dict, list in
                     dict[list.id] = list
                 }
-            print("Loaded grocery list onto local repo successffully")
         } catch {
             print(
                 "Failed to load grocery lists onto local repository: \(error.localizedDescription)"
@@ -57,9 +52,7 @@ class GroceryListRepository {
         return nil
     }
 
-    func addItemToGroceryList(item: GroceryListItem, into listWithID: UUID)
-        async
-    {
+    func addItemToGroceryList(item: GroceryListItem, into listWithID: UUID) async {
         do {
             let updatedList =
                 try await groceryListService.insertGroceryListItem(
@@ -107,7 +100,7 @@ class GroceryListRepository {
             print(
                 "Failed to fetch specific grocery list: \(error.localizedDescription)"
             )
-        }
+    }
         return nil
     }
 

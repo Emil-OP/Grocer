@@ -12,40 +12,6 @@ import Testing
 
 struct GroceryListTest {
 
-    func makeGroceryList(itemsAmount: Int, purchasedItemsAmount: Int) -> GroceryList {
-        let id = UUID()
-        let items = (0..<itemsAmount).map { _ in makeItem(id: id) }
-        let purchasedItems = (0..<purchasedItemsAmount).map { _ in
-            makeItem(id: id)
-        }
-
-        return GroceryList(
-            id: id,
-            name: "List \(String(Int.random(in: 1...100)))",
-            items: items,
-            purchasedItems: purchasedItems
-        )
-    }
-
-    func makeItem(id: UUID) -> GroceryListItem {
-        GroceryListItem(
-            product: makeProduct(),
-            parentLists: [id: Int.random(in: 1...10)]
-        )
-    }
-
-    func makeProduct() -> Product {
-        Product(
-            id: UUID(),
-            productName: "Test Product",
-            price: Double.random(in: 1...10),
-            measurementDescription: "Test kg",
-            measurement: Double.random(in: 1...10),
-            supermarketName: "Test Supermarket",
-            imageURL: ""
-        )
-    }
-
     @Test("Grocery list completion percentage", arguments: [
                                                     (3, 2, 40.0),
                                                     (0, 5, 100.0),
@@ -55,7 +21,7 @@ struct GroceryListTest {
                                                 ]
     ) func percentage_for_purchased_items(itemsAmount: Int, purchasedItemsAmount: Int, expected: Double) async throws {
         //ARRANGE
-        let list = makeGroceryList(itemsAmount: itemsAmount, purchasedItemsAmount: purchasedItemsAmount)
+        let list = GroceryList.mock(itemsAmount: itemsAmount, purchasedItemsAmount: purchasedItemsAmount)
         //ACT
         let percentage = await list.completedPercentage
         //ASSERT
