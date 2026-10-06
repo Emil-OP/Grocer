@@ -42,9 +42,11 @@ class ProductService: ProductServiceProtocol {
             forHTTPHeaderField: "Authorization"
         )
         let (data, response) = try await URLSession.shared.data(for: request)
-        guard let response = response as? HTTPURLResponse,
-            response.statusCode == 200
+        guard let response = response as? HTTPURLResponse
         else { throw URLError(.badServerResponse) }
+        
+        guard response.statusCode == 200
+        else { throw ServiceError.serverError(statusCode: response.statusCode) }
 
         return try JSONDecoder().decode([Product].self, from: data)
     }

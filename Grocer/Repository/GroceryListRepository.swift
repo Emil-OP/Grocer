@@ -12,6 +12,7 @@ class GroceryListRepository {
     private(set) var groceryLists: [UUID: GroceryList] = [:]
     private(set) var isLoading: Bool = false
     private let groceryListService: any GroceryListServiceProtocol
+    private var error: String?
     var groceryListsArray: [GroceryList] {
         Array(groceryLists.values)
     }
@@ -31,9 +32,7 @@ class GroceryListRepository {
                     dict[list.id] = list
                 }
         } catch {
-            print(
-                "Failed to load grocery lists onto local repository: \(error.localizedDescription)"
-            )
+            self.error = error.localizedDescription
         }
     }
 

@@ -16,8 +16,6 @@ enum TabItems {
 
 struct ContentView: View {
     @Environment(AuthManager.self) private var authManager
-    @State private var productRepo = ProductRepository()
-    @State private var groceryListRepo = GroceryListRepository()
     @State private var selectedTab: TabItems = .myLists
 
     var body: some View {
