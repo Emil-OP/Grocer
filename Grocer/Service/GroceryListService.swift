@@ -58,6 +58,7 @@ struct GroceryListService: GroceryListServiceProtocol {
         guard response.statusCode == 200 else {
             
             if response.statusCode == 401 {
+                
                 AuthManager().logout()
             }
             throw ServiceError.serverError(statusCode: response.statusCode)

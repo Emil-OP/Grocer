@@ -105,8 +105,7 @@ struct LoginView: View {
                         print("Login info submitted")
                         Task {
                             do {
-                                let service = AuthService()
-                                let loginResponse = try await service.login(
+                                let loginResponse = try await authService.login(
                                     username: username,
                                     password: password
                                 )
@@ -164,8 +163,7 @@ struct LoginView: View {
                         print("Register submitted")
                         Task {
                             do {
-                                let service = AuthService()
-                                let registerResponse = try await service.register(
+                                let registerResponse = try await authService.register(
                                     username: username,
                                     password: password,
                                     name: name
