@@ -57,17 +57,17 @@ app.post('/register',async (req, res)=>{
         const accessToken = jwt.sign(
             tokenPayload,
             process.env.JWT_SECRET,
-            {expiresIn: '15d'}
+            {expiresIn: `${process.env.ACCESS_TOKEN_TTL}d`}
         )
         const refreshToken = jwt.sign(
             tokenPayload,
             process.env.JWT_REFRESH_SECRET,
-            {expiresIn: '7d'}
+            {expiresIn: `${process.env.REFRESH_TOKEN_TTL}d`}
         )
         const hashedRefreshToken = await bcrypt.hash(refreshToken, 10)
 
         const expiresAt = new Date()
-        expiresAt.setDate(expiresAt.getDate() + 7)
+        expiresAt.setDate(expiresAt.getDate() + parseInt(process.env.REFRESH_TOKEN_TTL,10))
 
         const refreshTokenQuery = `INSERT INTO refresh_tokens (user_id, refresh_token_hash, expires_at) VALUES ($1, $2, $3)`
 
@@ -117,7 +117,7 @@ app.post('/login', async (req, res)=>{
         const accessToken = jwt.sign(
             accessTokenPayload,
             process.env.JWT_SECRET,
-            {expiresIn : '999d'}
+            {expiresIn : `${process.env.ACCESS_TOKEN_TTL}d`}
         )
 
         const refreshTokenPayload = {
@@ -127,17 +127,21 @@ app.post('/login', async (req, res)=>{
         const refreshToken = jwt.sign(
             refreshTokenPayload,
             process.env.JWT_REFRESH_SECRET,
-            {expiresIn: '7d'}
+            {expiresIn: `${process.env.REFRESH_TOKEN_TTL}d`}
         )
 
         const hashedRefreshToken = await bcrypt.hash(refreshToken, 10)
 
         const expiresAt = new Date()
-        expiresAt.setDate(expiresAt.getDate() + 7)
+        expiresAt.setDate(expiresAt.getDate() + parseInt(process.env.REFRESH_TOKEN_TTL,10))
+
+        const deleteOldTokensQuery = `DELETE FROM refresh_tokens WHERE user_id = $1 AND expires_at < NOW()`
+
+        await pool.query(deleteOldTokensQuery, [user.id])
 
         const refreshTokenQuery = `INSERT INTO refresh_tokens (user_id, refresh_token_hash, expires_at) VALUES ($1, $2, $3)`
 
-        const refreshQueryResult = await pool.query(refreshTokenQuery,[user.id,hashedRefreshToken,expiresAt])
+        await pool.query(refreshTokenQuery,[user.id,hashedRefreshToken,expiresAt])
 
         res.status(200).json({
             message: "Login successful",
@@ -165,30 +169,33 @@ app.post('/refresh', async (req, res) => {
     const refreshTokenQuery = `SELECT * FROM refresh_tokens INNER JOIN users ON refresh_tokens.user_id = users.id WHERE user_id = $1`
     const result = await pool.query(refreshTokenQuery,[userId])
 
-    if (result.rows.length === 0){
-        return res.status(401).json({error: "Invalid token"})
+    let matchedRow = null
+    for (const row of result.rows) {
+        if (await bcrypt.compare(refreshToken, row.refresh_token_hash)) {
+            matchedRow = row
+            break
+        }
+    }
+    if (!matchedRow) {
+        return res.status(401).json({ error: "Invalid token" })
     }
 
-    const isTokenValid = await bcrypt.compare(refreshToken,result.rows[0].refresh_token_hash)
-    if ( !isTokenValid ) {
-        return res.status(401).json({error: "Invalid token"})
-    }
     const newAccessTokenPayload = {
         sub: userId,
-        role: result.rows[0].role
+        role: matchedRow.role
     }
 
     const newAccessToken = jwt.sign(
         newAccessTokenPayload,
         process.env.JWT_SECRET,
-        {expiresIn : '15m'}
+        {expiresIn : `${process.env.ACCESS_TOKEN_TTL}d`}
     )
     res.status(200).json({
         message: 'Refresh successful',
         access_token: newAccessToken
     })
     } catch(error){
-        console.error("Login error:",error)
+        console.error("Refresh error:",error)
         res.status(500).json({error: "Internal server error"})
     }
 })
