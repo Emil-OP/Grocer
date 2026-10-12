@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Xcode
+xcuserdata/
+DerivedData/
+build/
+
+# Backend
+/grocerAPI/.env
+/grocerAPI/node_modules/
+
+# Local learning notes
+/.vibe-wise/
