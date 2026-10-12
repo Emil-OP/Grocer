@@ -57,7 +57,7 @@ app.post('/register',async (req, res)=>{
         const accessToken = jwt.sign(
             tokenPayload,
             process.env.JWT_SECRET,
-            {expiresIn: `${process.env.ACCESS_TOKEN_TTL}d`}
+            {expiresIn: `${process.env.ACCESS_TOKEN_TTL}m`}
         )
         const refreshToken = jwt.sign(
             tokenPayload,
@@ -117,7 +117,7 @@ app.post('/login', async (req, res)=>{
         const accessToken = jwt.sign(
             accessTokenPayload,
             process.env.JWT_SECRET,
-            {expiresIn : `${process.env.ACCESS_TOKEN_TTL}d`}
+            {expiresIn: `${process.env.ACCESS_TOKEN_TTL}m`}
         )
 
         const refreshTokenPayload = {
