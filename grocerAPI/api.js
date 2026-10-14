@@ -435,24 +435,28 @@ app.post('/grocery-lists/:listId/items', authenticateToken, async (req, res) => 
         // Note: This assumes you have a unique constraint/primary key on (gl_id, p_id)
         const insertItemQuery = `
             INSERT INTO grocery_list_items (gl_id, p_id, amount, is_checked)
-            VALUES ($1, $2, $3, false)
+            SELECT id, $2, $3, false
+            FROM grocery_lists
+            WHERE id = $1 AND user_id = $4
             ON CONFLICT (gl_id, p_id) DO UPDATE 
             SET amount = grocery_list_items.amount + EXCLUDED.amount;
         `;
-        await pool.query(insertItemQuery, [listId, productId, quantity]);
+        await pool.query(insertItemQuery, [listId, productId, quantity, userId]);
 
         // 2. Fetch the fully updated list to return back to Swift
         const getUpdatedListQuery = `
             SELECT 
                 gl.id as gl_id, gl.name as grocery_list_name,
                 p.id as p_id, p.product_name as product_name, 
-                p.price::FLOAT, p.measurement_description, p.measurement::FLOAT, 
-                p.supermarket, p.image_url,
+                p.price::FLOAT, p.measurement_description, p.measurement::FLOAT,
+                p.image_url,
                 gl_i.amount::INTEGER, gl_i.is_checked,
-                gl_i.id as gli_id
+                gl_i.id as gli_id,
+                s.supermarket_name
             FROM grocery_list_items as gl_i
             INNER JOIN grocery_lists as gl on gl_i.gl_id = gl.id
             INNER JOIN products as p on gl_i.p_id = p.id
+            INNER JOIN supermarkets as s on p.supermarket = s.id
             WHERE gl.id = $1 AND gl.user_id = $2
             ORDER BY product_name ASC;
         `;
@@ -479,14 +483,15 @@ app.post('/grocery-lists/:listId/items', authenticateToken, async (req, res) => 
                 price: row.price,
                 measurement_description: row.measurement_description,
                 measurement: row.measurement,
-                supermarket_name: row.supermarket,
+                supermarket_name: row.supermarket_name,
                 image_url: row.image_url || ""
             };
 
             const groceryListItem = {
                 gli_id: row.gli_id, 
                 item: product, 
-                quantity: parseInt(row.amount,10)
+                amount: parseInt(row.amount,10),//Changed this to fit decoder from quantity to amount. I should probably just standardize this as I no longer need to test my decoding understanding.
+                gl_id: row.gl_id
             };
 
             if (row.is_checked) {
