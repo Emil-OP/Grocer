@@ -30,7 +30,7 @@ extension ServiceError: LocalizedError {
         case .serverError(404):
             return "Requested object not found."
         case .serverError(500):
-            return "Server crashed due tu unhandled exception."
+            return "Server crashed due to unhandled exception."
         case .serverError(503):
             return "Server currently down for maintenance."
         case .serverError(statusCode: let statusCode):

@@ -86,7 +86,7 @@ struct GroceryListEditView: View {
 }
 
 #Preview {
-    let mockRepo = GroceryListRepository()
+    let mockRepo = GroceryListRepository(groceryListService: GroceryListService(apiClient: APIClient(baseURL: .apiBaseURL, tokenProvider: AuthManager())))
 
     GroceryListEditView(
         currentListId: UUID(uuidString: "0528017b-8810-4098-ad30-037cca4a8b86")!

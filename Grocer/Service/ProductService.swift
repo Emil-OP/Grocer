@@ -14,65 +14,30 @@ protocol ProductServiceProtocol {
 
 class ProductService: ProductServiceProtocol {
 
-    let accessToken =
-        KeychainHelper.shared.readString(for: "access_token") ?? ""
-
-    let baseURL =
-        Bundle.main.object(forInfoDictionaryKey: "BASE_URL") as? String
+    let apiClient: any APIClientProtocol
+    
+    init(apiClient: any APIClientProtocol) {
+        self.apiClient = apiClient
+    }
 
     func fetchProducts(page: Int, limit: Int = 20) async throws -> [Product] {
-
-        guard let baseURL else {
-            throw URLError(.badURL)
-        }
-
-        guard
-            let url = URL(
-                string: "\(baseURL)/products?page=\(page)&limit=\(limit)"
-            )
-        else {
-            throw URLError(.badURL)
-        }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(
-            "Bearer \(accessToken)",
-            forHTTPHeaderField: "Authorization"
-        )
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard let response = response as? HTTPURLResponse
-        else { throw URLError(.badServerResponse) }
         
-        guard response.statusCode == 200
-        else { throw ServiceError.serverError(statusCode: response.statusCode) }
+        let queryItems = [
+            URLQueryItem(name: "page", value: String(page)),
+            URLQueryItem(name: "limit", value: String(limit))
+        ]
+        
+        return try await apiClient.send(Endpoint(path: "/products",queryItems: queryItems, method: .get, body: nil))
 
-        return try JSONDecoder().decode([Product].self, from: data)
     }
 
     func fetchProductByName(productName: String) async throws -> [Product] {
-        guard let baseURL else {
-            throw URLError(.badURL)
-        }
-        guard let url = URL(string: "\(baseURL)/search?q=\(productName)") else {
-            throw URLError(.badURL)
-        }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(
-            "Bearer \(accessToken)",
-            forHTTPHeaderField: "Authorization"
-        )
-
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard let response = response as? HTTPURLResponse,
-            response.statusCode == 200
-        else { throw URLError(.badServerResponse) }
-
-        return try JSONDecoder().decode([Product].self, from: data)
+        
+        let queryItems = [
+            URLQueryItem(name: "q", value: productName)
+        ]
+        
+        return try await apiClient.send(Endpoint(path: "/search",queryItems: queryItems, method: .get, body: nil))
 
     }
 }

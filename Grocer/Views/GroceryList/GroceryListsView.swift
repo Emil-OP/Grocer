@@ -242,5 +242,5 @@ struct GroceryListsView: View {
 
 #Preview {
     GroceryListsView()
-        .environment(GroceryListRepository())
+        .environment(GroceryListRepository(groceryListService: GroceryListService(apiClient: APIClient(baseURL: .apiBaseURL, tokenProvider: AuthManager()))))
 }

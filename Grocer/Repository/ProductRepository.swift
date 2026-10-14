@@ -18,7 +18,7 @@ class ProductRepository {
 
     private let productService: any ProductServiceProtocol
 
-    init(productService: any ProductServiceProtocol = ProductService()) {
+    init(productService: any ProductServiceProtocol) {
         self.productService = productService
     }
 

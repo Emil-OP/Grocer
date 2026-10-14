@@ -16,6 +16,7 @@ enum TabItems {
 
 struct ContentView: View {
     @Environment(AuthManager.self) private var authManager
+    @Environment(APIClient.self) private var apiClient
     @State private var selectedTab: TabItems = .myLists
 
     var body: some View {
@@ -26,7 +27,7 @@ struct ContentView: View {
                     }
                     .ignoresSafeArea()
             } else {
-                MainTabView(selectedTab: $selectedTab)
+                MainTabView(apiClient: apiClient,selectedTab: $selectedTab)
                     .ignoresSafeArea()
             }
     }
@@ -34,6 +35,9 @@ struct ContentView: View {
 }
 
 #Preview {
+    
+    @Previewable var manager = AuthManager()
     ContentView()
-        .environment(AuthManager.shared)
+        .environment(manager)
+        .environment(APIClient(baseURL: .apiBaseURL, tokenProvider: manager))
 }

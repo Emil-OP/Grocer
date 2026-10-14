@@ -7,37 +7,15 @@
 
 import Foundation
 
+protocol TokenProviding {
+    var accessToken: String { get }
+}
+
 @Observable
-final class AuthManager {
+final class AuthManager: TokenProviding {
     
-    
-    //TODO: Fix this
-    
-    static let shared = AuthManager()
-    
-    
-    var accessToken: String = ""
-//    {
-//        didSet {
-//            if accessToken.isEmpty {
-//                KeychainHelper.shared.delete(for: "access_token")
-//            } else {
-//                KeychainHelper.shared.save(accessToken, for: "access_token")
-//            }
-//        }
-//    }
-    
-    var refreshToken: String = ""
-//    {
-//            didSet {
-//                if refreshToken.isEmpty {
-//                    KeychainHelper.shared.delete(for: "refresh_token")
-//                } else {
-//                    KeychainHelper.shared.save(refreshToken, for: "refresh_token")
-//                }
-//            }
-//        }
-    
+    private(set) var accessToken: String = ""
+    private(set) var refreshToken: String = ""
     var isAuthenticated: Bool {
         !accessToken.isEmpty
     }
@@ -45,7 +23,6 @@ final class AuthManager {
     init(){
         let existingAccessToken = KeychainHelper.shared.readString(for: "access_token")
         self.accessToken = existingAccessToken ?? ""
-        
         let existingRefreshToken = KeychainHelper.shared.readString(for: "refresh_token")
         self.refreshToken = existingRefreshToken ?? ""
     }

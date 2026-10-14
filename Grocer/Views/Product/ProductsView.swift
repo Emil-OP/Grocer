@@ -113,5 +113,5 @@ struct ProductListItem: View {
     NavigationStack {
         ProductsView()
     }
-    .environment(ProductRepository())
+    .environment(ProductRepository(productService: ProductService(apiClient: APIClient(baseURL: .apiBaseURL, tokenProvider: AuthManager()))))
 }

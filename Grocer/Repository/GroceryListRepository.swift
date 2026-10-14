@@ -9,15 +9,15 @@ import Foundation
 
 @Observable
 class GroceryListRepository {
+    private let groceryListService: any GroceryListServiceProtocol
     private(set) var groceryLists: [UUID: GroceryList] = [:]
     private(set) var isLoading: Bool = false
-    private let groceryListService: any GroceryListServiceProtocol
     private var error: String?
     var groceryListsArray: [GroceryList] {
         Array(groceryLists.values)
     }
 
-    init(groceryListService: any GroceryListServiceProtocol = GroceryListService()) {
+    init(groceryListService: any GroceryListServiceProtocol) {
         self.groceryListService = groceryListService
     }
 

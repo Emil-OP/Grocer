@@ -9,9 +9,15 @@ import SwiftUI
 
 struct MainTabView: View {
     @Environment(AuthManager.self) private var authManager
-    @State private var productRepo = ProductRepository()
-    @State private var groceryListRepo = GroceryListRepository()
+    @State private var productRepo: ProductRepository
+    @State private var groceryListRepo: GroceryListRepository
     @Binding var selectedTab: TabItems
+    
+    init(apiClient: any APIClientProtocol,selectedTab: Binding<TabItems>) {
+        _productRepo = State(initialValue: ProductRepository(productService: ProductService(apiClient: apiClient)))
+        _groceryListRepo = State(initialValue:GroceryListRepository(groceryListService: GroceryListService(apiClient: apiClient)))
+        _selectedTab = selectedTab
+    }
     
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -40,6 +46,7 @@ struct MainTabView: View {
 
 #Preview {
     @Previewable @State var tab = TabItems.myLists
-    MainTabView(selectedTab: $tab)
-        .environment(AuthManager())
+    @Previewable var manager = AuthManager()
+    MainTabView(apiClient: APIClient(baseURL: .apiBaseURL, tokenProvider: manager),selectedTab: $tab)
+        .environment(manager)
 }
