@@ -227,11 +227,11 @@ struct GroceryListsView: View {
         var mergedItems: [String: GroceryListItem] = [:]
 
         for item in dupedList {
-            if var existingItem = mergedItems[item.id.uuidString] {
-                existingItem.quantity += item.quantity
-                mergedItems[item.id.uuidString] = existingItem
+            if var existingItem = mergedItems[item.item.id.uuidString] {
+                existingItem.amount += item.amount
+                mergedItems[item.item.id.uuidString] = existingItem
             } else {
-                mergedItems[item.id.uuidString] = item
+                mergedItems[item.item.id.uuidString] = item
             }
         }
         return mergedItems.values.sorted {
