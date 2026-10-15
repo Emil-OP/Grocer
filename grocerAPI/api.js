@@ -198,7 +198,7 @@ app.post('/refresh', async (req, res) => {
     const newAccessToken = jwt.sign(
         newAccessTokenPayload,
         process.env.JWT_SECRET,
-        {expiresIn : `${process.env.ACCESS_TOKEN_TTL}d`}
+        {expiresIn : `${process.env.ACCESS_TOKEN_TTL}m`}
     )
     res.status(200).json({
         message: 'Refresh successful',
@@ -345,7 +345,7 @@ app.get('/grocery-lists', authenticateToken, async (req, res) => {
             p.measurement_description,
             p.measurement::FLOAT,
             p.image_url,
-            s.supermarket_name as supermarket, 
+            s.supermarket_name, 
             gl_i.amount::INTEGER,
             gl_i.is_checked,
             gl_i.id as gli_id
@@ -364,7 +364,7 @@ app.get('/grocery-lists', authenticateToken, async (req, res) => {
             if (!groupedLists[row.gl_id]) {
                 groupedLists[row.gl_id] = {
                     id: row.gl_id,
-                    name: row.grocery_list_name,
+                    list_name: row.grocery_list_name,
                     items: [],
                     purchased_items: []
                 };
@@ -378,7 +378,7 @@ app.get('/grocery-lists', authenticateToken, async (req, res) => {
                     price: row.price,
                     measurement: row.measurement,
                     measurement_description: row.measurement_description,
-                    supermarket_name: row.supermarket,
+                    supermarket_name: row.supermarket_name,
                     image_url: row.image_url || ""
                 };
 
@@ -432,7 +432,7 @@ app.post('/grocery-lists', authenticateToken, async (req, res) => {
         // 3. Construct the response to perfectly match your Swift model
         const finalResponse = {
             id: newList.id,
-            name: newList.name,
+            list_name: newList.name,
             items: [],
             purchased_items: [],
             is_active: true 
@@ -453,10 +453,10 @@ app.post('/grocery-lists/:listId/items', authenticateToken, async (req, res) => 
     try {
         const userId = req.user.sub;
         const { listId } = req.params;
-        const { productId, quantity } = req.body; 
+        const { productId, amount } = req.body; 
 
-        if (!productId || !quantity) {
-            return res.status(400).json({ error: "productId and quantity are required." });
+        if (!productId || !amount) {
+            return res.status(400).json({ error: "productId and amount are required." });
         }
 
         // 1. Insert the item (or update the amount if it already exists in the list)
@@ -469,7 +469,7 @@ app.post('/grocery-lists/:listId/items', authenticateToken, async (req, res) => 
             ON CONFLICT (gl_id, p_id) DO UPDATE 
             SET amount = grocery_list_items.amount + EXCLUDED.amount;
         `;
-        await pool.query(insertItemQuery, [listId, productId, quantity, userId]);
+        await pool.query(insertItemQuery, [listId, productId, amount, userId]);
 
         // 2. Fetch the fully updated list to return back to Swift
         const getUpdatedListQuery = `
@@ -498,7 +498,7 @@ app.post('/grocery-lists/:listId/items', authenticateToken, async (req, res) => 
         // 3. Rebuild the Swift-friendly JSON structure for this single list
         let updatedList = {
             id: listId,
-            name: listQueryResult.rows[0].grocery_list_name,
+            list_name: listQueryResult.rows[0].grocery_list_name,
             items: [],
             purchased_items: [],
             is_active: true
@@ -577,7 +577,7 @@ app.patch('/grocery-lists/:listId/items/:glItemID', authenticateToken, async (re
                 gl.id as gl_id, gl.name as grocery_list_name,
                 p.id as p_id, p.product_name as product_name, 
                 p.price::FLOAT, p.measurement_description, p.measurement::FLOAT, 
-                p.supermarket, p.image_url,
+                p.image_url,
                 s.supermarket_name,
                 gl_i.amount::INT, gl_i.is_checked,
                 gl_i.id as gli_id
@@ -593,7 +593,7 @@ app.patch('/grocery-lists/:listId/items/:glItemID', authenticateToken, async (re
 
         let updatedList = {
             id: listId,
-            name: listQueryResult.rows[0].grocery_list_name,
+            list_name: listQueryResult.rows[0].grocery_list_name,
             items: [],
             purchased_items: [],
             is_active: true
@@ -645,12 +645,13 @@ app.get('/grocery-lists/:listId', authenticateToken, async (req, res) => {
                 gl.id as gl_id, gl.name as grocery_list_name,
                 p.id as p_id, p.product_name as product_name, 
                 p.price::FLOAT, p.measurement_description, p.measurement::FLOAT, 
-                p.supermarket, p.image_url,
+                s.supermarket_name, p.image_url,
                 gl_i.amount, gl_i.is_checked,
                 gl_i.id as gli_id
             FROM grocery_lists as gl
             LEFT JOIN grocery_list_items as gl_i on gl.id = gl_i.gl_id
             LEFT JOIN products as p on gl_i.p_id = p.id
+            LEFT JOIN supermarkets as s on p.supermarket = s.id
             WHERE gl.id = $1 AND gl.user_id = $2
             ORDER BY product_name ASC;
         `;
@@ -679,14 +680,15 @@ app.get('/grocery-lists/:listId', authenticateToken, async (req, res) => {
                     price: row.price,
                     measurement_description: row.measurement_description,
                     measurement: row.measurement,
-                    supermarket_name: row.supermarket,
+                    supermarket_name: row.supermarket_name,
                     image_url: row.image_url || ""
                 };
 
                 const groceryListItem = {
                     gli_id: row.gli_id, 
                     item: product, 
-                    quantity: parseInt(row.amount,10) 
+                    amount: parseInt(row.amount,10), 
+                    gl_id: row.gl_id
                 };
 
                 if (row.is_checked) {
