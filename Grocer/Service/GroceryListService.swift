@@ -59,7 +59,7 @@ struct GroceryListService: GroceryListServiceProtocol {
 
         let payload = InsertPayload(
             productId: item.item.id.uuidString,
-            amount: item.quantity
+            amount: item.amount
         )
         
         

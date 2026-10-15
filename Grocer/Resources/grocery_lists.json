@@ -1,7 +1,7 @@
 [
     {
         "id": "34853010-f3ab-4c74-95eb-a4b7b54dc480",
-        "name": "1",
+        "list_name": "1",
         "items": [
             {
                 "gli_id": "b4773daa-106b-449f-b7ca-b8d1a53625e6",
@@ -204,7 +204,7 @@
     },
     {
         "id": "2463c749-6599-44f3-9263-0df5cc17d488",
-        "name": "2",
+        "list_name": "2",
         "items": [],
         "purchased_items": [
             {
@@ -481,7 +481,7 @@
     },
     {
         "id": "c2ce1723-8a7a-4ac8-b6ee-ecefcb75c33b",
-        "name": "3",
+        "list_name": "3",
         "items": [],
         "purchased_items": [
             {

@@ -20,7 +20,7 @@ import Foundation
     
     enum CodingKeys: String, CodingKey {
         case id
-        case name
+        case name = "list_name"
         case items
         case purchasedItems = "purchased_items"
     }

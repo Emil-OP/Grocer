@@ -39,7 +39,7 @@ struct GroceryListItemRow: View {
                         HStack {
                             Text("Cant. ")
                                 .foregroundStyle(.gray.opacity(0.8))
-                            Text("\(product.quantity)")
+                            Text("\(product.amount)")
                         }
                     }
                 }
