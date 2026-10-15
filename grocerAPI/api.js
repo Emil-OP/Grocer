@@ -3,7 +3,8 @@ const express = require('express')
 const app = express()
 const bcrypt = require('bcrypt')
 const port = process.env.PORT || 3300
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken')
+const cron = require('node-cron')
 
 app.use(express.json())
 
@@ -12,6 +13,7 @@ app.listen(port, ()=>{
 })
 
 const authenticateToken = (req,res,next)=>{
+    //TODO: Remove this log after testing
     console.log("Incoming Headers: ", req.headers);
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -22,7 +24,7 @@ const authenticateToken = (req,res,next)=>{
 
     jwt.verify(token, process.env.JWT_SECRET,(err, decodedUser)=>{
         if(err){
-            return res.status(403).json({error:"Invalid or expired token."});
+            return res.status(401).json({error:"Invalid or expired token."});
         }
 
         req.user = decodedUser;
@@ -46,7 +48,9 @@ app.post('/register',async (req, res)=>{
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
-        const registerQuery = `INSERT INTO users (username, password_hash, name) VALUES ($1 ,$2, $3) RETURNING id, username, name`
+        const registerQuery = `INSERT INTO users (username, password_hash, name) 
+                                VALUES ($1 ,$2, $3) 
+                                RETURNING id, username, name`
         const registerQueryResult = await pool.query(registerQuery, [username, hashedPassword, name])
 
         const newUser = registerQueryResult.rows[0]
@@ -69,7 +73,8 @@ app.post('/register',async (req, res)=>{
         const expiresAt = new Date()
         expiresAt.setDate(expiresAt.getDate() + parseInt(process.env.REFRESH_TOKEN_TTL,10))
 
-        const refreshTokenQuery = `INSERT INTO refresh_tokens (user_id, refresh_token_hash, expires_at) VALUES ($1, $2, $3)`
+        const refreshTokenQuery = `INSERT INTO refresh_tokens (user_id, refresh_token_hash, expires_at) 
+                                    VALUES ($1, $2, $3)`
 
         const refreshQueryResult = await pool.query(refreshTokenQuery,[newUser.id,hashedRefreshToken,expiresAt])
 
@@ -135,11 +140,13 @@ app.post('/login', async (req, res)=>{
         const expiresAt = new Date()
         expiresAt.setDate(expiresAt.getDate() + parseInt(process.env.REFRESH_TOKEN_TTL,10))
 
-        const deleteOldTokensQuery = `DELETE FROM refresh_tokens WHERE user_id = $1 AND expires_at < NOW()`
+        const deleteOldTokensQuery = `DELETE FROM refresh_tokens 
+                                        WHERE user_id = $1 AND expires_at < NOW()`
 
         await pool.query(deleteOldTokensQuery, [user.id])
 
-        const refreshTokenQuery = `INSERT INTO refresh_tokens (user_id, refresh_token_hash, expires_at) VALUES ($1, $2, $3)`
+        const refreshTokenQuery = `INSERT INTO refresh_tokens (user_id, refresh_token_hash, expires_at) 
+                                    VALUES ($1, $2, $3)`
 
         await pool.query(refreshTokenQuery,[user.id,hashedRefreshToken,expiresAt])
 
@@ -165,8 +172,11 @@ app.post('/refresh', async (req, res) => {
     try {
     const { refreshToken } = req.body
     const decodedPayload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
+    
     const userId = decodedPayload.sub
-    const refreshTokenQuery = `SELECT * FROM refresh_tokens INNER JOIN users ON refresh_tokens.user_id = users.id WHERE user_id = $1`
+    const refreshTokenQuery = `SELECT * FROM refresh_tokens 
+                                INNER JOIN users ON refresh_tokens.user_id = users.id 
+                                WHERE user_id = $1 AND expires_at > NOW()`
     const result = await pool.query(refreshTokenQuery,[userId])
 
     let matchedRow = null
@@ -195,9 +205,27 @@ app.post('/refresh', async (req, res) => {
         access_token: newAccessToken
     })
     } catch(error){
+        if (error instanceof jwt.JsonWebTokenError) {
+                return res.status(401).json({error:"Invalid token"})
+            }
         console.error("Refresh error:",error)
         res.status(500).json({error: "Internal server error"})
     }
+})
+
+// Cron job for deleting expired tokens every hour
+
+cron.schedule('0 * * * *', async () => {
+  console.log('Running scheduled cleanup: Deleting expired refresh tokens...');
+  
+  try {
+    const queryText = 'DELETE FROM refresh_tokens WHERE expires_at < NOW();';
+    const result = await pool.query(queryText);
+    
+    console.log(`Cleanup successful. Removed ${result.rowCount} expired tokens.`);
+  } catch (error) {
+    console.error('Error during token cleanup job:', error);
+  }
 })
 
 
