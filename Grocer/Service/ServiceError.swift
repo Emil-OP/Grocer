@@ -19,22 +19,31 @@ extension ServiceError: LocalizedError {
         switch self {
         case .invalidURL:
             return "Invalid URL"
+            
         case .badResponse:
             return "Bad response"
+            
         case .serverError(400):
             return "Request invalid."
+            
         case .serverError(401):
-            return "Invalid authentication, access denied."
+            return "Access denied: Invalid authentication."
+            
         case .serverError(403):
-            return "Unauthorized user, access denied."
+            return "Acces denied: User has insufficient permissions."
+            
         case .serverError(404):
             return "Requested object not found."
+            
         case .serverError(500):
             return "Server crashed due to unhandled exception."
+            
         case .serverError(503):
             return "Server currently down for maintenance."
+            
         case .serverError(statusCode: let statusCode):
             return "Unexpected error with status code: \(statusCode)"
+            
         case .decodingError(let error):
             return "Failed to decode response: \(error.localizedDescription)"
         }
